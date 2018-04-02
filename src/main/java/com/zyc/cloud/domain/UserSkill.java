@@ -1,127 +1,83 @@
 package com.zyc.cloud.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- * Created on 2018/3/18
+ * Created on 2018/3/27.
  * Author: Gordon
  * Email: biggordon@163.com
  */
 @Entity
 @Table(name = "user_skill")
-public class UserSkill extends SkillijUserBase{
+public class UserSkill implements Serializable {
+
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
-    private Boolean computerBasis;
-    private Boolean javaProgram;
-    private Boolean javaWebDevelopment;
-    private Boolean javaVirtualMachine;
-    private Boolean database;
-    private Boolean linux;
-    private Boolean server;
-    private Boolean designPattern;
-    private Boolean algorithm;
-    private Boolean distributedSystem;
-    private Boolean projectExperience;
+    @Column(name = "skill_name", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '技能名称'")
+    private String skillName;
 
-    public Integer getId() {
+    @Column(name = "proficiency", columnDefinition = "INT(4) NOT NULL DEFAULT '0' " +
+            "COMMENT '技能熟练度，0没听过，1听过，2了解，3熟悉，4掌握，5精通，6有创新'")
+    private Integer proficiency;
+
+    @Column(name = "description", columnDefinition = "VARCHAR(200) DEFAULT NULL COMMENT '技能掌握描述'")
+    private String description;
+
+    @Column(name = "user_id", columnDefinition = "BIGINT(20) NOT NULL COMMENT '技能的掌握人id'")
+    private Long userId;
+
+    @Column(name = "parent_id", columnDefinition = "BIGINT(20) NOT NULL COMMENT '父技能的id，无为0'")
+    private Long parentId;
+
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Boolean getComputerBasis() {
-        return computerBasis;
+    public String getSkillName() {
+        return skillName;
     }
 
-    public void setComputerBasis(Boolean computerBasis) {
-        this.computerBasis = computerBasis;
+    public void setSkillName(String skillName) {
+        this.skillName = skillName;
     }
 
-    public Boolean getJavaProgram() {
-        return javaProgram;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setJavaProgram(Boolean javaProgram) {
-        this.javaProgram = javaProgram;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Boolean getJavaWebDevelopment() {
-        return javaWebDevelopment;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setJavaWebDevelopment(Boolean javaWebDevelopment) {
-        this.javaWebDevelopment = javaWebDevelopment;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
-    public Boolean getJavaVirtualMachine() {
-        return javaVirtualMachine;
+    public Integer getProficiency() {
+        return proficiency;
     }
 
-    public void setJavaVirtualMachine(Boolean javaVirtualMachine) {
-        this.javaVirtualMachine = javaVirtualMachine;
+    public void setProficiency(Integer proficiency) {
+        this.proficiency = proficiency;
     }
 
-    public Boolean getDatabase() {
-        return database;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDatabase(Boolean database) {
-        this.database = database;
-    }
-
-    public Boolean getLinux() {
-        return linux;
-    }
-
-    public void setLinux(Boolean linux) {
-        this.linux = linux;
-    }
-
-    public Boolean getServer() {
-        return server;
-    }
-
-    public void setServer(Boolean server) {
-        this.server = server;
-    }
-
-    public Boolean getDesignPattern() {
-        return designPattern;
-    }
-
-    public void setDesignPattern(Boolean designPattern) {
-        this.designPattern = designPattern;
-    }
-
-    public Boolean getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(Boolean algorithm) {
-        this.algorithm = algorithm;
-    }
-
-    public Boolean getDistributedSystem() {
-        return distributedSystem;
-    }
-
-    public void setDistributedSystem(Boolean distributedSystem) {
-        this.distributedSystem = distributedSystem;
-    }
-
-    public Boolean getProjectExperience() {
-        return projectExperience;
-    }
-
-    public void setProjectExperience(Boolean projectExperience) {
-        this.projectExperience = projectExperience;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

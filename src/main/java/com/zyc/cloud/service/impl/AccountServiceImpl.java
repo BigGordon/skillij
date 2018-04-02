@@ -1,10 +1,19 @@
 package com.zyc.cloud.service.impl;
 
+import com.zyc.cloud.domain.SkillijUser;
+import com.zyc.cloud.domain.UserSkill;
+import com.zyc.cloud.dto.SkillTreeDto;
 import com.zyc.cloud.repository.AccountRepository;
+import com.zyc.cloud.repository.SkillRepository;
 import com.zyc.cloud.service.AccountService;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2018/2/6.
@@ -16,6 +25,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Resource
     private AccountRepository accountRepository;
+
+    @Resource
+    private SkillRepository skillRepository;
 
     /**
      * 校验用户登录
@@ -35,5 +47,90 @@ public class AccountServiceImpl implements AccountService {
             return "密码错误";
         }
     }
+
+    /**
+     * 获取侧边栏账号
+     * @return
+     */
+    @Override
+    public List<String> getSideAccounts() {
+        List<Long> ids = new ArrayList<>();
+
+        //TODO:改成随机获取
+        ids.add(Long.valueOf(1));
+        ids.add(Long.valueOf(2));
+
+        List<SkillijUser> accounts = accountRepository.getSkillijUserByIds(ids);
+        List<String> result = new ArrayList<>();
+        for (SkillijUser skillijUser : accounts) {
+            result.add(skillijUser.getUsername());
+        }
+
+        return result;
+    }
+
+    /**
+     * 获取用户技能树
+     * @param user
+     * @return
+     */
+    @Override
+    public SkillTreeDto getUserSkillTree(String user) {
+        SkillTreeDto mainSkillTree = new SkillTreeDto(user);
+        Long id = accountRepository.getIdByUsername(user);
+        List<UserSkill> userSkills = skillRepository.findUserSkillsByUserId(id);
+        //创建并装载各级技能树
+        Map<Long, Map<Long, SkillTreeDto>> levelSkills = new HashMap<>();
+        for (UserSkill userSkill: userSkills) {
+            Long level = userSkill.getParentId();
+            if (levelSkills.get(level) == null) {
+                Map<Long, SkillTreeDto> mSkills = new HashMap<>();
+                SkillTreeDto skillTreeDto = new SkillTreeDto(userSkill.getSkillName());
+                skillTreeDto.setParentId(userSkill.getParentId());
+                mSkills.put(userSkill.getId(), skillTreeDto);
+                levelSkills.put(level, mSkills);
+            } else {
+                Map<Long, SkillTreeDto> mSkills = levelSkills.get(level);
+                SkillTreeDto skillTreeDto = new SkillTreeDto(userSkill.getSkillName());
+                skillTreeDto.setParentId(userSkill.getParentId());
+                mSkills.put(userSkill.getId(), skillTreeDto);
+                levelSkills.put(level, mSkills);
+            }
+        }
+        //将各级技能树装载到根技能树上
+        for (Integer j = levelSkills.size() - 1; j >= 0; j--) {
+            Long i = j.longValue();
+            for (SkillTreeDto aSkillTreeDto: levelSkills.get(i).values()) {
+                Long parentId = aSkillTreeDto.getParentId();
+                if (i != 0) {
+                    SkillTreeDto parentDto = levelSkills.get(i - 1).get(parentId);
+                    if (parentDto.getChildren() == null) {
+                        List<SkillTreeDto> skillTreeDtos = new ArrayList<>();
+                        skillTreeDtos.add(aSkillTreeDto);
+                        parentDto.setChildren(skillTreeDtos);
+                    } else {
+                        List<SkillTreeDto> skillTreeDtos = parentDto.getChildren();
+                        skillTreeDtos.add(aSkillTreeDto);
+                        parentDto.setChildren(skillTreeDtos);
+                    }
+                    levelSkills.get(i-1).put(parentId, parentDto);
+                } else {
+                    if (mainSkillTree.getChildren() == null) {
+                        List<SkillTreeDto> skillTreeDtos = new ArrayList<>();
+                        skillTreeDtos.add(aSkillTreeDto);
+                        mainSkillTree.setChildren(skillTreeDtos);
+                    } else {
+                        List<SkillTreeDto> skillTreeDtos = mainSkillTree.getChildren();
+                        skillTreeDtos.add(aSkillTreeDto);
+                        mainSkillTree.setChildren(skillTreeDtos);
+                    }
+                }
+            }
+        }
+
+        return mainSkillTree;
+    }
+
+
 
 }
