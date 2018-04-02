@@ -50,4 +50,6 @@ login = function () {
             });
         });
     }
+
+    return me;
 }

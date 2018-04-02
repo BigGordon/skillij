@@ -19,3 +19,11 @@ spring:
     show-sql: true
   jackson:
     serialization: true
+
+jwt:
+  header: Authorization
+
+logging:
+  level:
+    com.ystc.cloud: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

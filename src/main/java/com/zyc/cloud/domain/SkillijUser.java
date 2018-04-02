@@ -1,9 +1,9 @@
 package com.zyc.cloud.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created on 2018/2/2.
@@ -12,19 +12,23 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "skillij_user")
-public class SkillijUser {
+public class SkillijUser implements Serializable{
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
+
+    @Column(name = "username", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户名称'")
     private String username;
+
+    @Column(name = "password", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户密码'")
     private String password;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
