@@ -32,6 +32,9 @@ public class UserSkill implements Serializable {
     @Column(name = "parent_id", columnDefinition = "BIGINT(20) NOT NULL COMMENT '父技能的id，无为0'")
     private Long parentId;
 
+    @Column(name = "level", columnDefinition = "BIGINT(20) NOT NULL COMMENT '该技能位于树的级层'")
+    private Long level;
+
 
     public Long getId() {
         return id;
@@ -79,5 +82,13 @@ public class UserSkill implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getLevel() {
+        return level;
+    }
+
+    public void setLevel(Long level) {
+        this.level = level;
     }
 }

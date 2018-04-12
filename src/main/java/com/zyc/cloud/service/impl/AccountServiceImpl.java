@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
         //创建并装载各级技能树
         Map<Long, Map<Long, SkillTreeDto>> levelSkills = new HashMap<>();
         for (UserSkill userSkill: userSkills) {
-            Long level = userSkill.getParentId();
+            Long level = userSkill.getLevel();
             if (levelSkills.get(level) == null) {
                 Map<Long, SkillTreeDto> mSkills = new HashMap<>();
                 SkillTreeDto skillTreeDto = new SkillTreeDto(userSkill.getSkillName());

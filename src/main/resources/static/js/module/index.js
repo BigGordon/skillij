@@ -6,6 +6,8 @@ index = function () {
 
     var sideNameDom ="<a href='#' class='list-group-item' id='side-name'></a>";
 
+    var eChartsTree = echarts.init(document.getElementById('tree'));
+
     /**
      * index页面初始化
      */
@@ -13,7 +15,7 @@ index = function () {
         //登录按钮
         me._initSideBarBtn();
     };
-    
+
     me._initSideBarBtn = function () {
         $.ajax({
             type: "GET",
@@ -45,16 +47,18 @@ index = function () {
 
             (function (i) {
                 sideName.on("click", function () {
+                    $("#tree").show();
+                    eChartsTree.showLoading();
                     $.ajax({
                         type: "GET",
                         url: "/account/skills",
                         async: true,
                         data: {
-                            user: names[i-1]
+                            user: "java"//names[i-1]
                         },
                         success: function (res) {
                             var resJson = JSON.parse(res);
-                            me._loadZtree(resJson.data.skills);
+                            me._loadTree(resJson.data.skills);
                         },
                         error: function (e) {
                             alert("请求出错！");
@@ -67,12 +71,56 @@ index = function () {
 
     };
     
-    me._loadZtree = function (zNodes) {
-        var zTreeObj;
-        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-        var setting = {};
-        // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
-        zTreeObj = $.fn.zTree.init($("#skill-tree"), setting, zNodes);
+    me._loadTree = function (data) {
+        eChartsTree.hideLoading();
+
+        echarts.util.each(data.children, function (datum, index) {
+            index % 2 === 0 && (datum.collapsed = true);
+        });
+
+        eChartsTree.setOption(option = {
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove'
+            },
+            series: [
+                {
+                    type: 'tree',
+
+                    data: [data],
+
+                    top: '1%',
+                    left: '7%',
+                    bottom: '1%',
+                    right: '20%',
+
+                    symbolSize: 7,
+
+                    label: {
+                        normal: {
+                            position: 'left',
+                            verticalAlign: 'middle',
+                            align: 'right',
+                            fontSize: 9
+                        }
+                    },
+
+                    leaves: {
+                        label: {
+                            normal: {
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                align: 'left'
+                            }
+                        }
+                    },
+
+                    expandAndCollapse: true,
+                    animationDuration: 550,
+                    animationDurationUpdate: 750
+                }
+            ]
+        });
     };
 
 
