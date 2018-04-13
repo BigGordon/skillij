@@ -117,7 +117,8 @@ index = function () {
 
                     expandAndCollapse: true,
                     animationDuration: 550,
-                    animationDurationUpdate: 750
+                    animationDurationUpdate: 750,
+                    initialTreeDepth: -1
                 }
             ]
         });

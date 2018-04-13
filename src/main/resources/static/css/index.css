@@ -13,6 +13,51 @@ footer {
   padding: 30px 0;
 }
 
+/*.carousel-inner*/
+#myCarousel {
+    margin-top: 50px;
+    border-bottom: 4px solid #80B421;
+}
+
+.carousel-inner > .item {
+}
+
+.carousel-caption {
+    padding: 0px;
+    bottom: 40%;
+    display: block;
+    height: 80px;
+}
+
+.carousel-caption h1 {
+    font-size: 45px;
+    padding: 10px 15px;
+    background: rgba(128, 180, 33, 0.80);
+    color: #FFFFFF;
+    text-shadow: none;
+    font-weight: bold;
+    display: inline-block;
+}
+/*.carousel-caption h1 {
+        background: rgba(0,0,0,0.2);
+        text-align: center;
+        color:#fff;
+        font: 95px/1 "Impact";
+        text-transform: uppercase;
+        display: block;
+        text-shadow:#253e45 -1px 1px 0,
+        #253e45 -2px 2px 0,
+        #d45848 -3px 3px 0,
+        #d45848 -4px 4px 0;
+        margin: 5% auto 5%;
+    }*/
+.carousel-caption h3 {
+    font-size: 30px;
+    color: #1C4604;
+    font-weight: bold;
+    text-shadow: #fff 1px 1px 1px;
+}
+
 /*
  * Off Canvas
  * --------------------------------------------------
@@ -25,35 +70,13 @@ footer {
             transition: all .25s ease-out;
   }
 
-  .row-offcanvas-right {
-    right: 0;
-  }
-
-  .row-offcanvas-left {
-    left: 0;
-  }
-
-  .row-offcanvas-right
-  .sidebar-offcanvas {
-    right: -50%; /* 6 columns */
-  }
-
-  .row-offcanvas-left
-  .sidebar-offcanvas {
-    left: -50%; /* 6 columns */
-  }
-
-  .row-offcanvas-right.active {
-    right: 50%; /* 6 columns */
-  }
-
-  .row-offcanvas-left.active {
-    left: 50%; /* 6 columns */
-  }
-
-  .sidebar-offcanvas {
+    /*边栏*/
+    .sidebar-offcanvas {
     position: absolute;
     top: 0;
     width: 50%; /* 6 columns */
   }
+
+
+
 }

@@ -526,7 +526,7 @@ public abstract class BaseServiceTest {
         jMongoDB = createSkill("MongoDB", 6, null, java.getId(), jno, 2L);
         skillRepository.saveAndFlush(jMongoDB);
 
-        Long jdis = jDistributedSystem.getId();//分布式缓存的子节点
+        Long jdis = jDistributedCache.getId();//分布式缓存的子节点
         jMemocached = createSkill("Memocached", 6, null, java.getId(), jdis, 2L);
         jRedis = createSkill("Redis", 6, null, java.getId(), jdis, 2L);
         skillRepository.saveAndFlush(jMemocached);

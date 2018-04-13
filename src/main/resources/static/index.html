@@ -26,7 +26,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">主页</a></li>
+                <li class="active"><a href="#home">主页</a></li>
                 <li><a href="#about">关于</a></li>
                 <li><a href="#contact">联系我们</a></li>
             </ul>
@@ -38,62 +38,91 @@
     </div><!-- /.container -->
 </nav>
 
-<div class="container">
-
-    <div class="row row-offcanvas row-offcanvas-right">
-
-        <div class="col-xs-12 col-sm-9">
-            <p class="pull-right visible-xs">
-                <button type="button" class="btn btn-primaryditn-xs" data-toggle="offcanvas">Toggle nav</button>
-            </p>
-            <div class="jumbotron">
-                <h1>Skillij</h1>
-                <p>量化你的java学习</p>
+<div id="#top"></div>
+<section id="home">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class=""></li>
+            <li data-target="#myCarousel" data-slide-to="1" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="2" class=""></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="item">
+                <img data-src="images/chess-2.jpg" alt="First slide" src="images/chess-2.jpg" />
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1>源码与文档</h1>
+                        <h3>阅读该网站的源码以及说明文档，了解该网站的结构与原理</h3>
+                        <!--<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>-->
+                    </div>
+                </div>
             </div>
-
-            <!-- eCharts树 -->
-            <div id="tree" style="width:100%;height:800px"></div>
-
-            <div class="row">
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-                <div class="col-xs-6 col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-                </div><!--/.col-xs-6.col-lg-4-->
-            </div><!--/row-->
-        </div><!--/.col-xs-12.col-sm-9-->
-
-        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-            <div class="list-group">
-                <a href="#" class="list-group-item active">查看其他人的技能树</a>
+            <div class="item active">
+                <img data-src="images/apple.jpg" alt="Second slide" src="images/apple.jpg">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1>Skillij</h1>
+                        <h3>java技能可视化管理平台</h3>
+                        <!--<p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>-->
+                    </div>
+                </div>
             </div>
-        </div><!--/.sidebar-offcanvas-->
-    </div><!--/row-->
+            <div class="item">
+                <img data-src="images/windmills.jpg" alt="Third slide" src="images/windmills.jpg">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1 id="">技能树</h1>
+                        <h3>量化自己的java水平，从菜鸟到老鸟，逐步点开自己的技能树</h3>
+                        <!--<p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+</section>
+
+<section id="aboutUs" class="page-section darkBg pDark pdingBtm30">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h3><i class="fa fa-desktop color"></i> &nbsp; 可视化管理</h3>
+                <!-- Paragraph -->
+                <p>量化自身的java水平，从横向与纵向两个维度，编辑自己的java技能树</p>
+                <a href="register.html">注册我的技能树</a>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <!-- Heading -->
+                <h3><i class="fa fa-cloud color"></i> &nbsp;对比激励</h3>
+                <!-- Paragraph -->
+                <p>了解大牛们的技能树，取长补短，进一步深化自己技能</p>
+                <a href="#demo">查看演示demo</a>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <!-- Heading -->
+                <h3><i class="fa fa-home color"></i> &nbsp;源码与文档</h3>
+                <!-- Paragraph -->
+                <p>网站本身同样采用java技术。如果感兴趣的话，前往GitHub查看整个网站的源码与详细的文档说明。欢迎Star！</p>
+                <a href="https://github.com/BigGordon/skillij" target=_blank>前往GitHub</a>
+            </div>
+        </div>
+    </div>
+    <!--/.container-->
+</section>
+
+
+
+    <!-- eCharts树 -->
+    <div id="tree" style="width:100%;height:800px"></div>
+
+    <!-- 点击查看他人技能树 -->
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+        <div class="list-group">
+            <a href="#" class="list-group-item active">查看其他人的技能树</a>
+        </div>
+    </div><!--/.sidebar-offcanvas-->
 
     <hr>
 
