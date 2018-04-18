@@ -15,47 +15,30 @@ footer {
 
 /*.carousel-inner*/
 #myCarousel {
-    margin-top: 50px;
-    border-bottom: 4px solid #80B421;
+    margin-top: -30px;
+    /*border-bottom: 4px solid #80B421;*/
 }
 
-.carousel-inner > .item {
+.pdingBtm30 {
+    padding-bottom: 30px;
 }
 
-.carousel-caption {
-    padding: 0px;
-    bottom: 40%;
-    display: block;
-    height: 80px;
+.page-section {
+    width: 100%;
+    height: auto;
+    padding: 30px 0;
 }
 
-.carousel-caption h1 {
-    font-size: 45px;
-    padding: 10px 15px;
-    background: rgba(128, 180, 33, 0.80);
-    color: #FFFFFF;
-    text-shadow: none;
-    font-weight: bold;
-    display: inline-block;
+.darkBg {
+    background: rgb(44, 44, 44);
 }
-/*.carousel-caption h1 {
-        background: rgba(0,0,0,0.2);
-        text-align: center;
-        color:#fff;
-        font: 95px/1 "Impact";
-        text-transform: uppercase;
-        display: block;
-        text-shadow:#253e45 -1px 1px 0,
-        #253e45 -2px 2px 0,
-        #d45848 -3px 3px 0,
-        #d45848 -4px 4px 0;
-        margin: 5% auto 5%;
-    }*/
-.carousel-caption h3 {
-    font-size: 30px;
-    color: #1C4604;
-    font-weight: bold;
-    text-shadow: #fff 1px 1px 1px;
+
+.darkBg h2 {
+    color: #fff;
+}
+
+.darkBg .fa {
+    color: #80B421;
 }
 
 /*

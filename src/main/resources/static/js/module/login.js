@@ -42,6 +42,7 @@ login = function () {
                 success: function (res) {
                     var resJson = JSON.parse(res);
                     alert(resJson.data.loginResult);
+                    $(location).attr('href', 'admin.html');
                 },
                 error: function (e) {
                     alert("请求出错！");

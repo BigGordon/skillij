@@ -14,8 +14,14 @@ index = function () {
     me.init = function () {
         //登录按钮
         me._initSideBarBtn();
+        //初始化java演示
+        me._initDemo();
     };
 
+    /**
+     * 初始化demo中的按钮
+     * @private
+     */
     me._initSideBarBtn = function () {
         $.ajax({
             type: "GET",
@@ -36,6 +42,11 @@ index = function () {
 
     };
 
+    /**
+     * 切换技能树按钮
+     * @param names
+     * @private
+     */
     me._loadSideBar = function (names) {
         var size = names.length;
         for (var i = 1; i <= size; i++) {
@@ -47,14 +58,13 @@ index = function () {
 
             (function (i) {
                 sideName.on("click", function () {
-                    $("#tree").show();
                     eChartsTree.showLoading();
                     $.ajax({
                         type: "GET",
                         url: "/account/skills",
                         async: true,
                         data: {
-                            user: "java"//names[i-1]
+                            user: names[i-1]
                         },
                         success: function (res) {
                             var resJson = JSON.parse(res);
@@ -70,9 +80,15 @@ index = function () {
         }
 
     };
-    
+
+    /**
+     * 将数据装载到eChartsTree上
+     * @param data
+     * @private
+     */
     me._loadTree = function (data) {
         eChartsTree.hideLoading();
+        eChartsTree.clear();
 
         echarts.util.each(data.children, function (datum, index) {
             index % 2 === 0 && (datum.collapsed = true);
@@ -121,6 +137,31 @@ index = function () {
                     initialTreeDepth: -1
                 }
             ]
+        });
+        window.location.href = "#demo";
+    };
+
+    /**
+     * 初始化demo，默认数据为整棵java技能树
+     * @private
+     */
+    me._initDemo = function () {
+        eChartsTree.showLoading();
+        $.ajax({
+            type: "GET",
+            url: "/account/skills",
+            async: true,
+            data: {
+                user: "java"
+            },
+            success: function (res) {
+                var resJson = JSON.parse(res);
+                me._loadTree(resJson.data.skills);
+            },
+            error: function (e) {
+                alert("请求出错！");
+            }
+
         });
     };
 

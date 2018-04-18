@@ -57,8 +57,9 @@ public class AccountServiceImpl implements AccountService {
         List<Long> ids = new ArrayList<>();
 
         //TODO:改成随机获取
-        ids.add(Long.valueOf(1));
-        ids.add(Long.valueOf(2));
+        ids.add(1L);//gordon
+        ids.add(2L);//traveller_ing
+        ids.add(3L);//java
 
         List<SkillijUser> accounts = accountRepository.getSkillijUserByIds(ids);
         List<String> result = new ArrayList<>();
