@@ -6,6 +6,8 @@ edit = function () {
 
     var checkBoxHtml ="<div><label><input class=\"checkbox\" type=\"checkbox\" value=\"\"></label></div>";
 
+    var editingIds = new Array();
+
     /**
      * edit页面初始化
      */
@@ -27,6 +29,21 @@ edit = function () {
         me._initCheckBoxAll();
         //修改按钮初始化
         me._initEditBtn();
+        //完成按钮初始化
+        me._initEditDoneBtn();
+    };
+
+    /**
+     * 修改完成按钮初始化
+     * @private
+     */
+    me._initEditDoneBtn = function() {
+        $("#confirm-btn").on("click", function () {
+            for (var i = 0; i < editingIds.length; i++) {
+                var id = editingIds[i];
+                $("[skillId = id]");//TODO:完成编辑，向后台发信息
+            }
+        });
     };
 
     /**
@@ -35,11 +52,11 @@ edit = function () {
      */
     me._initEditBtn = function() {
         $("#edit-btn").on("click", function () {
-            var ids = new Array();
+            editingIds.splice(0, editingIds.length);//清空数组
             $(".checkbox").each(function () {
                 if ($(this).prop("checked")) {
                     var tr = $(this).parents("tr");
-                    ids.push(tr.attr("skillId"));
+                    editingIds.push(tr.attr("skillId"));
                     tr.children().each(function () {
                         if ($(this).attr("editable") == 'true') {
                             var val = $(this).html();
@@ -50,9 +67,7 @@ edit = function () {
                 }
                 $(this).attr("disabled", true);
             });
-            $("#new-btn").attr("disabled", true);
-            $("#delete-btn").attr("disabled", true);
-            //alert(ids);
+            me._onOperation();
         });
     };
 
@@ -135,6 +150,17 @@ edit = function () {
      */
     me._getInputTextHtml = function(value) {
         return "<input type='text' value='" + value.toString() + "'/>";
+    };
+
+    /**
+     * 操作环境，激活确定按钮，使其他按钮失效
+     * @private
+     */
+    me._onOperation = function() {
+        $("#new-btn").attr("disabled", true);
+        $("#delete-btn").attr("disabled", true);
+        $("#edit-btn").attr("disabled", true);
+        $("#confirm-btn").attr("disabled", false);
     };
 
     /**
