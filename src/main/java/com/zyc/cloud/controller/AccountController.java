@@ -16,6 +16,7 @@ import java.util.List;
  * Created on 2018/2/2.
  * Author: Gordon
  * Email: biggordon@163.com
+ * 处理账号相关请求
  */
 @RestController
 @RequestMapping
