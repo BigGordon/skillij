@@ -38,7 +38,7 @@
                         <button id="confirm-btn" type="button" class="btn btn-outline btn-primary" disabled> 完成 </button>
                     </div>
                     <br>
-                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTable-skill">
                         <thead>
                         <tr>
                             <th>
@@ -74,6 +74,7 @@
 <!-- 全局js -->
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/layer/layer.js"></script>
 
 <!-- DataTables JavaScript -->
 <script src="js/table/jquery.dataTables.min.js"></script>
@@ -89,7 +90,7 @@
     $(document).ready(function () {
         fileManage.init();
 
-        $('#dataTables-example').DataTable({
+        $('#dataTable-skill').DataTable({
             responsive: true
         });
 

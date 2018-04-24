@@ -9,8 +9,11 @@ import com.zyc.cloud.service.EditService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2018/4/18.
@@ -55,5 +58,34 @@ public class EditServiceImpl implements EditService {
             result.add(node);
         }
         return result;
+    }
+
+    /**
+     * 修改用户技能
+     * @param editNodesDtos
+     */
+    @Override
+    @Transactional
+    public String reviseSkill(List<EditNodesDto> editNodesDtos, String user) {
+        Long userId = accountRepository.getIdByUsername(user);
+        //将节点更新结果存进数据库
+        for (EditNodesDto editNodesDto: editNodesDtos) {
+            //默认挂载在根节点上
+            Long parentId = 0L;
+            Long level = 0L;
+            //当父节点不是根节点时
+            if (!editNodesDto.getParentSkillName().equals("root")) {
+                UserSkill skill = skillRepository.findUserSkillBySkillNameAndUserId(editNodesDto.getParentSkillName(), userId);
+                if (skill == null) {
+                    return "父节点不存在";
+                }
+                parentId = skill.getId();
+                level = skill.getLevel() + 1;
+            }
+
+            skillRepository.updateUserSkillById(editNodesDto.getSkillId(), editNodesDto.getSkillName(),
+                    editNodesDto.getProficiency(), editNodesDto.getSkillDescrip(), parentId, level);
+        }
+        return "修改成功";
     }
 }

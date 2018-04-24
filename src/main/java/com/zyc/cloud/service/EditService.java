@@ -10,5 +10,16 @@ import java.util.List;
  * Email: biggordon@163.com
  */
 public interface EditService {
+    /**
+     * 获取用户的技能树节点信息
+     * @param user
+     * @return
+     */
     List<EditNodesDto> getNodes(String user);
+
+    /**
+     * 修改用户的技能
+     * @param editNodesDtos
+     */
+    String reviseSkill(List<EditNodesDto> editNodesDtos, String user);
 }

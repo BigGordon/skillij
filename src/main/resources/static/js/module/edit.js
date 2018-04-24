@@ -39,10 +39,52 @@ edit = function () {
      */
     me._initEditDoneBtn = function() {
         $("#confirm-btn").on("click", function () {
+            //采集用户输入的修改值
+            var json = [];
             for (var i = 0; i < editingIds.length; i++) {
                 var id = editingIds[i];
-                $("[skillId = id]");//TODO:完成编辑，向后台发信息
+                $("#dataTable-skill tr").each(function () {
+                    if ($(this).attr("skillId") === id) {
+                        //单条tr转化为json
+                        var aJson =
+                            {skillId: "", skillName: "", parentSkillName: "", proficiency: "", description: ""};
+                        var td = $(this).children();
+                        aJson.skillId = id;
+                        aJson.skillName = td.eq(1).children("input").val();
+                        aJson.proficiency = td.eq(2).children("input").val();
+                        var parentSkillName = td.eq(3).children("input").val();
+                        if (parentSkillName == null || parentSkillName.trim() ==="") {
+                            aJson.parentSkillName = "root";
+                        } else {
+                            aJson.parentSkillName = parentSkillName;
+                        }
+                        aJson.description = td.eq(5).children("input").val();
+                        json.push(aJson);
+                    }
+                });
             }
+            //将修改的结果发给后台
+            $.ajax({
+                type: "POST",
+                url: "/edit/revise",
+                async: true,
+                data: {
+                    nodes: JSON.stringify(json)
+                },
+                success: function (res) {
+                    var resJson = JSON.parse(res);
+                    var result = resJson.data.result;
+                    layer.open({title: '温馨提示', content: result})
+                    //重新加载表格
+                    me._refreshTable();
+                },
+                error: function (e) {
+                    alert("请求出错！");
+                }
+
+            });
+            //将按钮状态复原
+            me._doneOperation();
         });
     };
 
@@ -91,6 +133,15 @@ edit = function () {
     };
 
     /**
+     * 清空表格内容并重新加载表格
+     * @private
+     */
+    me._refreshTable = function() {
+        $("#dataTable-skill tbody").html("");
+        me._initNodeTable();
+    };
+
+    /**
      * 加载技能树节点表
      * @private
      */
@@ -101,7 +152,7 @@ edit = function () {
             url: "/edit/nodes",
             async: false,//为了支持表格功能不能异步
             data: {
-                user: "java"
+                user: "gordon"//TODO: 需要根据不同用户进行设置
             },
             success: function (res) {
                 var resJson = JSON.parse(res);
@@ -161,6 +212,30 @@ edit = function () {
         $("#delete-btn").attr("disabled", true);
         $("#edit-btn").attr("disabled", true);
         $("#confirm-btn").attr("disabled", false);
+
+
+        $("#dataTable-skill_length").hide();
+        $("#dataTable-skill_filter").hide();
+        $("#dataTable-skill_paginate").hide();
+
+    };
+
+    /**
+     * 操作结束，使完成按钮失效，激活其他按钮、复选框
+     * @private
+     */
+    me._doneOperation = function() {
+        $("#new-btn").attr("disabled", false);
+        $("#delete-btn").attr("disabled", false);
+        $("#edit-btn").attr("disabled", false);
+        $("#confirm-btn").attr("disabled", true);
+        $(".checkbox").each(function () {
+            $(this).attr("disabled", false);
+        });
+
+        $("#dataTable-skill_length").show();
+        $("#dataTable-skill_filter").show();
+        $("#dataTable-skill_paginate").show();
     };
 
     /**

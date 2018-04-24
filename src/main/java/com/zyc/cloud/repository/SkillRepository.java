@@ -4,6 +4,7 @@ import com.zyc.cloud.domain.UserSkill;
 import com.zyc.cloud.dto.EditNodesDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -38,4 +39,26 @@ public interface SkillRepository extends JpaRepository<UserSkill, Long>, JpaSpec
      */
     @Query("select u.skillName from UserSkill u where u.parentId = ?1")
     List<String> findSkillNamesByParentId(Long parentId);
+
+    /**
+     * 根据节点名查询节点id
+     * @param skillName
+     * @return
+     */
+    @Query("select u from UserSkill u where u.skillName = ?1 and u.userId = ?2")
+    UserSkill findUserSkillBySkillNameAndUserId(String skillName, Long userId);
+
+    /**
+     * 根据节点id修改技能节点
+     * @param id
+     * @param skillName
+     * @param proficiency
+     * @param description
+     * @param parentId
+     * @param level
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("update UserSkill u set u.skillName = ?2, u.proficiency = ?3, u.description = ?4, u.parentId = ?5, u.level = ?6 " +
+            "where u.id = ?1")
+    void updateUserSkillById(Long id, String skillName, Integer proficiency, String description, Long parentId, Long level);
 }

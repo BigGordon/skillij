@@ -1,17 +1,17 @@
 package com.zyc.cloud.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zyc.cloud.dto.EditNodesDto;
 import com.zyc.cloud.service.EditService;
 import com.zyc.cloud.service.impl.EditServiceImpl;
 import com.zyc.cloud.utils.JsonResult;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +30,34 @@ public class EditController {
 
     @ApiOperation(value = "显示用户技能树节点")
     @GetMapping(value = "/edit/nodes")
-    public String getSideAccounts(@RequestParam("user") String user) {
+    public String getNodes(@RequestParam("user") String user) {
         List<EditNodesDto> skillNodes = editService.getNodes(user);
         JSONObject jsonData = new JSONObject();
         jsonData.put("skillNodes", skillNodes);
+
+        return JsonResult.jsonWithRecord(jsonData);
+    }
+
+    @ApiOperation(value = "修改用户技能树节点")
+    @PostMapping(value = "/edit/revise")
+    public String reviseNodes(@RequestParam("nodes") String nodes) {
+        JSONArray jsonArray = JSON.parseArray(nodes);
+        List<EditNodesDto> editNodesList = new ArrayList<>();
+        //将jsonObjective转化为SkillTreeDto对象
+        for (int i = 0; i < jsonArray.size(); i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            EditNodesDto editNode = new EditNodesDto();
+            editNode.setSkillId(jsonObject.getLong("skillId"));
+            editNode.setSkillName(jsonObject.getString("skillName"));
+            editNode.setParentSkillName(jsonObject.getString("parentSkillName"));
+            editNode.setProficiency(jsonObject.getInteger("proficiency"));
+            editNode.setSkillDescrip(jsonObject.getString("description"));
+            editNodesList.add(editNode);
+        }
+        String result = editService.reviseSkill(editNodesList, "gordon");//TODO: 用户名要根据用户不同更改
+
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("result", result);
 
         return JsonResult.jsonWithRecord(jsonData);
     }
