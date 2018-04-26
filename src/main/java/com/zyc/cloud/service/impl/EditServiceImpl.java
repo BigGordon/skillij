@@ -36,7 +36,6 @@ public class EditServiceImpl implements EditService {
      */
     @Override
     public List<EditNodesDto> getNodes(String user) {
-        List<EditNodesDto> editNodes = new ArrayList<>();
         Long id = accountRepository.getIdByUsername(user);
         List<UserSkill> userSkills = skillRepository.findUserSkillsByUserId(id);
 
@@ -45,8 +44,8 @@ public class EditServiceImpl implements EditService {
             EditNodesDto node = new EditNodesDto();
             List<String> childrenName = skillRepository.findSkillNamesByParentId(userSkill.getId());
             String parentName = skillRepository.findSkillNameById(userSkill.getParentId());
-            if (parentName == null) {
-                parentName = "";
+            if (parentName == null && userSkill.getLevel() == 0) {
+                parentName = "root";
             }
 
             node.setSkillId(userSkill.getId());
@@ -77,7 +76,7 @@ public class EditServiceImpl implements EditService {
             if (!editNodesDto.getParentSkillName().equals("root")) {
                 UserSkill skill = skillRepository.findUserSkillBySkillNameAndUserId(editNodesDto.getParentSkillName(), userId);
                 if (skill == null) {
-                    return "父节点不存在";
+                    return "父节点\"" + editNodesDto.getParentSkillName() + "\"不存在";
                 }
                 parentId = skill.getId();
                 level = skill.getLevel() + 1;
@@ -87,5 +86,24 @@ public class EditServiceImpl implements EditService {
                     editNodesDto.getProficiency(), editNodesDto.getSkillDescrip(), parentId, level);
         }
         return "修改成功";
+    }
+
+    /**
+     * 根据id列表删除用户技能
+     * @param ids
+     */
+    @Override
+    @Transactional
+    public void deleteSkillByIds(List<Long> ids) {
+        //删除本身
+        skillRepository.deleteUserSkillsByIds(ids);//这个必须得打包一起删除，防止父类和子类同时被选中删除时出问题
+        //查找出子类并删除
+        for (Long id: ids) {
+            List<Long> childrenIds = skillRepository.findIdsByParentId(id);
+            //递归删除
+            if (childrenIds.size() > 0) {
+                deleteSkillByIds(childrenIds);
+            }
+        }
     }
 }

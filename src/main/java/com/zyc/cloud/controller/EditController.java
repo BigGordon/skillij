@@ -61,4 +61,12 @@ public class EditController {
 
         return JsonResult.jsonWithRecord(jsonData);
     }
+
+    @ApiOperation(value = "删除用户技能树节点")
+    @PostMapping(value = "/edit/delete")
+    public String deleteNodes(@RequestParam("ids") String skillIds) {
+        List<Long> idList = JSON.parseArray(skillIds, Long.class);
+        editService.deleteSkillByIds(idList);
+        return JsonResult.jsonWithSuccess();
+    }
 }

@@ -22,4 +22,10 @@ public interface EditService {
      * @param editNodesDtos
      */
     String reviseSkill(List<EditNodesDto> editNodesDtos, String user);
+
+    /**
+     * 根据id列表删除用户技能
+     * @param ids
+     */
+    void deleteSkillByIds(List<Long> ids);
 }

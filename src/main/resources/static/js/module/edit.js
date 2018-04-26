@@ -31,6 +31,35 @@ edit = function () {
         me._initEditBtn();
         //完成按钮初始化
         me._initEditDoneBtn();
+        //删除按钮初始化
+        me._initDeleteBtn();
+    };
+
+    /**
+     * 删除按钮初始化
+     * @private
+     */
+    me._initDeleteBtn = function() {
+        $("#delete-btn").on("click", function () {
+            //检查技能是否勾选
+            if (!me._isCheckBoxSelected()) {
+                layer.open({title: '温馨提示', content: '请勾选需要操作的技能'});
+                return;
+            }
+            editingIds.splice(0, editingIds.length);//清空数组
+            //统计要删除的id
+            $(".checkbox").each(function () {
+                if ($(this).prop("checked") && $(this).attr("id") !== "main-checkbox") {
+                    var tr = $(this).parents("tr");
+                    editingIds.push(tr.attr("skillId"));
+                }
+            });
+            //弹出删除提示框
+            layer.open({title: '温馨提示', content: '确定要删除吗', yes: function () {
+                    //向后台发送删除信息
+                    me._sendDeleteMsg();
+                }})
+        });
     };
 
     /**
@@ -74,9 +103,10 @@ edit = function () {
                 success: function (res) {
                     var resJson = JSON.parse(res);
                     var result = resJson.data.result;
-                    layer.open({title: '温馨提示', content: result})
-                    //重新加载表格
-                    me._refreshTable();
+                    layer.open({title: '温馨提示', content: result, end: function () {
+                            //重新加载表格
+                            window.location.reload();
+                        }})
                 },
                 error: function (e) {
                     alert("请求出错！");
@@ -94,9 +124,14 @@ edit = function () {
      */
     me._initEditBtn = function() {
         $("#edit-btn").on("click", function () {
+            //检查技能是否勾选
+            if (!me._isCheckBoxSelected()) {
+                layer.open({title: '温馨提示', content: '请勾选需要操作的技能'});
+                return;
+            }
             editingIds.splice(0, editingIds.length);//清空数组
             $(".checkbox").each(function () {
-                if ($(this).prop("checked")) {
+                if ($(this).prop("checked") && $(this).attr("id") !== "main-checkbox") {
                     var tr = $(this).parents("tr");
                     editingIds.push(tr.attr("skillId"));
                     tr.children().each(function () {
@@ -110,6 +145,31 @@ edit = function () {
                 $(this).attr("disabled", true);
             });
             me._onOperation();
+        });
+    };
+
+    /**
+     * 向后台发出删除技能请求
+     * @private
+     */
+    me._sendDeleteMsg = function() {
+        $.ajax({
+            type: "POST",
+            url: "/edit/delete",
+            async: true,
+            data: {
+                ids: JSON.stringify(editingIds)
+            },
+            success: function (res) {
+                layer.open({title: '温馨提示', content: '删除成功', end: function () {
+                        //重新加载表格
+                        window.location.reload();
+                    }})
+            },
+            error: function (e) {
+                alert("请求出错！");
+            }
+
         });
     };
 
@@ -130,15 +190,6 @@ edit = function () {
                 mainCheckBox.attr("selected", true);
             }
         });
-    };
-
-    /**
-     * 清空表格内容并重新加载表格
-     * @private
-     */
-    me._refreshTable = function() {
-        $("#dataTable-skill tbody").html("");
-        me._initNodeTable();
     };
 
     /**
@@ -183,7 +234,7 @@ edit = function () {
 
             $row.append("<td editable = true >" + node.skillName.toString() + "</td>");
             $row.append("<td editable = true >" + node.proficiency.toString() + "</td>");
-            $row.append("<td editable = true >" + node.parentSkillName.toString() + "</td>");
+            $row.append("<td editable = true >" + node.parentSkillName + "</td>");
             $row.append("<td editable = false >" + node.childrenName.toString() + "</td>");
             var descrip = node.descip;
             descrip = descrip != null? descrip.toString(): "";
@@ -191,6 +242,20 @@ edit = function () {
 
             $("#tbody").append($row);
         }
+    };
+
+    /**
+     * 检查技能是否勾选
+     * @private
+     */
+    me._isCheckBoxSelected = function() {
+        var flag = false;
+        $(".checkbox").each(function () {
+            if ($(this).prop("checked")) {
+                flag = true;
+            }
+        });
+        return flag;
     };
 
     /**

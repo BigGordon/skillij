@@ -61,4 +61,18 @@ public interface SkillRepository extends JpaRepository<UserSkill, Long>, JpaSpec
     @Query("update UserSkill u set u.skillName = ?2, u.proficiency = ?3, u.description = ?4, u.parentId = ?5, u.level = ?6 " +
             "where u.id = ?1")
     void updateUserSkillById(Long id, String skillName, Integer proficiency, String description, Long parentId, Long level);
+
+    /**
+     *  根据id列表删除用户技能
+     * @param ids
+     */
+    @Modifying(clearAutomatically = true)
+    void deleteUserSkillsByIds(List<Long> ids);
+
+    /**
+     * 根据父id找出下一级子id
+     * @return
+     */
+    @Query("select u.id from UserSkill u where u.parentId = ?1")
+    List<Long> findIdsByParentId(Long id);
 }
