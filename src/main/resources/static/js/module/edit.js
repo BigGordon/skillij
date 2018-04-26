@@ -6,7 +6,25 @@ edit = function () {
 
     var checkBoxHtml ="<div><label><input class=\"checkbox\" type=\"checkbox\" value=\"\"></label></div>";
 
+    var selectHtml = "<select class='selectpicker' title='请选择'>" +
+        "<option>0</option>" +
+        "<option>1</option>" +
+        "<option>2</option>" +
+        "<option>3</option>" +
+        "<option>4</option>" +
+        "<option>5</option>" +
+        "<option>6</option>" +
+        "</select>";
+
     var editingIds = new Array();
+
+    var statusOptions = {
+        ON_DONE: 0,
+        ON_EDIT: 1,
+        ON_NEW: 2
+    };
+
+    var status;
 
     /**
      * edit页面初始化
@@ -30,9 +48,47 @@ edit = function () {
         //修改按钮初始化
         me._initEditBtn();
         //完成按钮初始化
-        me._initEditDoneBtn();
+        me._initDoneBtn();
         //删除按钮初始化
         me._initDeleteBtn();
+        //新建按钮初始化
+        me._initNewBtn();
+    };
+
+    /**
+     * 新建按钮初始化
+     * @private
+     */
+    me._initNewBtn = function() {
+        $("#new-btn").on("click", function () {
+            //增加一行用于新建技能
+            var $row = $("<tr id='new-tr'></tr>");
+
+            //复选框
+            $row.append("<td editable = false >" + checkBoxHtml + "</td>");
+
+            $row.append("<td editable = true ></td>");
+            $row.append("<td editable = false >" + selectHtml + "</td>");
+            $row.append("<td editable = true ></td>");
+            $row.append("<td editable = false ></td>");
+            $row.append("<td editable = true ></td>");
+
+            $("#tbody").prepend($row);
+
+            //添加输入文本框
+            $("#new-tr").children().each(function () {
+                if ($(this).attr("editable") == 'true') {
+                    var val = $(this).html();
+                    $(this).empty();
+                    $(this).append(me._getInputTextHtml(val));
+                }
+            });
+
+            //按钮配置
+            me._onOperation();
+            //更新状态
+            status = statusOptions.ON_NEW;
+        });
     };
 
     /**
@@ -55,7 +111,11 @@ edit = function () {
                 }
             });
             //弹出删除提示框
-            layer.open({title: '温馨提示', content: '确定要删除吗', yes: function () {
+            layer.open({
+                title: '温馨提示',
+                content: '确定要删除吗',
+                btn: ['确定', '取消'],
+                yes: function () {
                     //向后台发送删除信息
                     me._sendDeleteMsg();
                 }})
@@ -66,55 +126,23 @@ edit = function () {
      * 修改完成按钮初始化
      * @private
      */
-    me._initEditDoneBtn = function() {
+    me._initDoneBtn = function() {
         $("#confirm-btn").on("click", function () {
-            //采集用户输入的修改值
-            var json = [];
-            for (var i = 0; i < editingIds.length; i++) {
-                var id = editingIds[i];
-                $("#dataTable-skill tr").each(function () {
-                    if ($(this).attr("skillId") === id) {
-                        //单条tr转化为json
-                        var aJson =
-                            {skillId: "", skillName: "", parentSkillName: "", proficiency: "", description: ""};
-                        var td = $(this).children();
-                        aJson.skillId = id;
-                        aJson.skillName = td.eq(1).children("input").val();
-                        aJson.proficiency = td.eq(2).children("input").val();
-                        var parentSkillName = td.eq(3).children("input").val();
-                        if (parentSkillName == null || parentSkillName.trim() ==="") {
-                            aJson.parentSkillName = "root";
-                        } else {
-                            aJson.parentSkillName = parentSkillName;
-                        }
-                        aJson.description = td.eq(5).children("input").val();
-                        json.push(aJson);
-                    }
-                });
+            var doneFlag = true;
+            switch (status) {
+                case statusOptions.ON_EDIT:
+                    me._storeEditResults();
+                    break;
+                case statusOptions.ON_NEW:
+                    doneFlag = me._storeNewResults();
+                    break;
             }
-            //将修改的结果发给后台
-            $.ajax({
-                type: "POST",
-                url: "/edit/revise",
-                async: true,
-                data: {
-                    nodes: JSON.stringify(json)
-                },
-                success: function (res) {
-                    var resJson = JSON.parse(res);
-                    var result = resJson.data.result;
-                    layer.open({title: '温馨提示', content: result, end: function () {
-                            //重新加载表格
-                            window.location.reload();
-                        }})
-                },
-                error: function (e) {
-                    alert("请求出错！");
-                }
-
-            });
-            //将按钮状态复原
-            me._doneOperation();
+            if (doneFlag) {
+                //将按钮状态复原
+                me._doneOperation();
+                //更新状态
+                status = statusOptions.ON_DONE;
+            }
         });
     };
 
@@ -135,16 +163,26 @@ edit = function () {
                     var tr = $(this).parents("tr");
                     editingIds.push(tr.attr("skillId"));
                     tr.children().each(function () {
-                        if ($(this).attr("editable") == 'true') {
+                        if ($(this).attr("editable") === 'true') {
                             var val = $(this).html();
                             $(this).empty();
                             $(this).append(me._getInputTextHtml(val));
                         }
+                        if ($(this).attr("selectable") === 'true') {
+                            var oldProficiency = $(this).html();
+                            $(this).empty();
+                            $(this).append(selectHtml);
+                            $(this).find('select').val(oldProficiency);
+                        }
                     });
+
                 }
                 $(this).attr("disabled", true);
             });
+            //限制其他的按钮
             me._onOperation();
+            //更新状态
+            status = statusOptions.ON_EDIT;
         });
     };
 
@@ -171,6 +209,109 @@ edit = function () {
             }
 
         });
+    };
+
+    /**
+     * 储存技能修改结果
+     * @private
+     */
+    me._storeEditResults = function() {
+        //采集用户输入的修改值
+        var json = [];
+        for (var i = 0; i < editingIds.length; i++) {
+            var id = editingIds[i];
+            $("#dataTable-skill tr").each(function () {
+                if ($(this).attr("skillId") === id) {
+                    //单条tr转化为json
+                    var aJson =
+                        {skillId: "", skillName: "", parentSkillName: "", proficiency: "", description: ""};
+                    var td = $(this).children();
+                    aJson.skillId = id;
+                    aJson.skillName = td.eq(1).children("input").val();
+                    aJson.proficiency = td.eq(2).children("select").val();
+                    var parentSkillName = td.eq(3).children("input").val();
+                    if (parentSkillName == null || parentSkillName.trim() ==="") {
+                        aJson.parentSkillName = "root";
+                    } else {
+                        aJson.parentSkillName = parentSkillName;
+                    }
+                    aJson.description = td.eq(5).children("input").val();
+                    json.push(aJson);
+                }
+            });
+        }
+        //将修改的结果发给后台
+        $.ajax({
+            type: "POST",
+            url: "/edit/revise",
+            async: true,
+            data: {
+                nodes: JSON.stringify(json)
+            },
+            success: function (res) {
+                var resJson = JSON.parse(res);
+                var result = resJson.data.result;
+                layer.open({title: '温馨提示', content: result, end: function () {
+                        //重新加载表格
+                        window.location.reload();
+                    }})
+            },
+            error: function (e) {
+                alert("请求出错！");
+            }
+
+        });
+    };
+
+    /**
+     * 储存新建技能结果
+     * @private
+     */
+    me._storeNewResults = function() {
+        //采集用户输入的新值
+        var newTr = $("#new-tr");
+        var aJson =
+            {skillName: "", parentSkillName: "", proficiency: "", description: ""};
+        var td = newTr.children();
+        aJson.skillName = td.eq(1).children("input").val();
+        aJson.proficiency = td.eq(2).children("select").val();
+        aJson.parentSkillName = td.eq(3).children("input").val();
+        aJson.description = td.eq(5).children("input").val();
+        //对新建的结果前台进行校验
+        if (aJson.skillName === null || aJson.skillName.trim() === "") {
+            layer.open({title: '温馨提示', content: '请输入节点名称'});
+            return false;
+        }
+        if (aJson.parentSkillName === null || aJson.parentSkillName.trim() === "") {
+            layer.open({title: '温馨提示', content: '请输入父节点名称'});
+            return false;
+        }
+        if (aJson.proficiency === null) {
+            layer.open({title: '温馨提示', content: '请输入熟练度'});
+            return false;
+        }
+        //将新建的结果发给后台
+        $.ajax({
+            type: "POST",
+            url: "/edit/new",
+            async: true,
+            data: {
+                nodes: JSON.stringify(aJson)
+            },
+            success: function (res) {
+                var resJson = JSON.parse(res);
+                var result = resJson.data.result;
+                layer.open({title: '温馨提示', content: result, end: function () {
+                        //重新加载表格
+                        window.location.reload();
+                    }})
+            },
+            error: function (e) {
+                alert("请求出错！");
+                window.location.reload();
+            }
+        });
+        return true;
     };
 
     /**
@@ -233,7 +374,7 @@ edit = function () {
             $row.append("<td editable = false >" + checkBoxHtml + "</td>");
 
             $row.append("<td editable = true >" + node.skillName.toString() + "</td>");
-            $row.append("<td editable = true >" + node.proficiency.toString() + "</td>");
+            $row.append("<td editable = false selectable = true>" + node.proficiency.toString() + "</td>");
             $row.append("<td editable = true >" + node.parentSkillName + "</td>");
             $row.append("<td editable = false >" + node.childrenName.toString() + "</td>");
             var descrip = node.descip;
@@ -268,6 +409,7 @@ edit = function () {
         return "<input type='text' value='" + value.toString() + "'/>";
     };
 
+
     /**
      * 操作环境，激活确定按钮，使其他按钮失效
      * @private
@@ -277,6 +419,9 @@ edit = function () {
         $("#delete-btn").attr("disabled", true);
         $("#edit-btn").attr("disabled", true);
         $("#confirm-btn").attr("disabled", false);
+        $(".checkbox").each(function () {
+            $(this).attr("disabled", true);
+        });
 
 
         $("#dataTable-skill_length").hide();

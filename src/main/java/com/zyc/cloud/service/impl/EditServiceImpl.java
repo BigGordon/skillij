@@ -81,7 +81,10 @@ public class EditServiceImpl implements EditService {
                 parentId = skill.getId();
                 level = skill.getLevel() + 1;
             }
-
+            //校验重复的技能名
+            if (isSkillNameDuplicated(editNodesDto.getSkillName(), userId)) {
+                return "技能名已存在";
+            }
             skillRepository.updateUserSkillById(editNodesDto.getSkillId(), editNodesDto.getSkillName(),
                     editNodesDto.getProficiency(), editNodesDto.getSkillDescrip(), parentId, level);
         }
@@ -105,5 +108,46 @@ public class EditServiceImpl implements EditService {
                 deleteSkillByIds(childrenIds);
             }
         }
+    }
+
+    /**
+     * 新建技能
+     * @param editNodesDto
+     * @param user
+     * @return
+     */
+    @Override
+    @Transactional
+    public String newSkill(EditNodesDto editNodesDto, String user) {
+        Long userId = accountRepository.getIdByUsername(user);
+        Long parentId = 0L;
+        Long level = 0L;
+        //当父节点不是根节点时
+        if (!editNodesDto.getParentSkillName().equals("root")) {
+            UserSkill skill = skillRepository.findUserSkillBySkillNameAndUserId(editNodesDto.getParentSkillName(), userId);
+            if (skill == null) {
+                return "父节点\"" + editNodesDto.getParentSkillName() + "\"不存在";
+            }
+            parentId = skill.getId();
+            level = skill.getLevel() + 1;
+        }
+        //校验重复的技能名
+        if (isSkillNameDuplicated(editNodesDto.getSkillName(), userId)) {
+            return "技能名已存在";
+        }
+        UserSkill newSkill = new UserSkill();
+        newSkill.setSkillName(editNodesDto.getSkillName());
+        newSkill.setParentId(parentId);
+        newSkill.setLevel(level);
+        newSkill.setDescription(editNodesDto.getSkillDescrip());
+        newSkill.setProficiency(editNodesDto.getProficiency());
+        newSkill.setUserId(userId);
+        skillRepository.saveAndFlush(newSkill);
+        return "新建成功";
+    }
+
+    private boolean isSkillNameDuplicated(String skillName, Long userId) {
+        UserSkill userSkill = skillRepository.findUserSkillBySkillNameAndUserId(skillName, userId);
+        return userSkill != null;
     }
 }

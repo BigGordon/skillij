@@ -20,6 +20,7 @@ public interface EditService {
     /**
      * 修改用户的技能
      * @param editNodesDtos
+     * @param user
      */
     String reviseSkill(List<EditNodesDto> editNodesDtos, String user);
 
@@ -28,4 +29,12 @@ public interface EditService {
      * @param ids
      */
     void deleteSkillByIds(List<Long> ids);
+
+    /**
+     * 新建技能
+     * @param editNodesDto
+     * @param user
+     * @return
+     */
+    String newSkill(EditNodesDto editNodesDto, String user);
 }

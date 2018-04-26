@@ -69,4 +69,21 @@ public class EditController {
         editService.deleteSkillByIds(idList);
         return JsonResult.jsonWithSuccess();
     }
+
+    @ApiOperation(value = "新建用户技能树节点")
+    @PostMapping(value = "/edit/new")
+    public String newNode(@RequestParam("nodes") String nodes) {
+        JSONObject jsonObject = JSON.parseObject(nodes);
+        EditNodesDto newNode = new EditNodesDto();
+        newNode.setSkillName(jsonObject.getString("skillName"));
+        newNode.setParentSkillName(jsonObject.getString("parentSkillName"));
+        newNode.setProficiency(jsonObject.getInteger("proficiency"));
+        newNode.setSkillDescrip(jsonObject.getString("description"));
+        String result = editService.newSkill(newNode, "gordon");//TODO: 用户名要根据用户不同更改
+
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("result", result);
+
+        return JsonResult.jsonWithRecord(jsonData);
+    }
 }
