@@ -215,9 +215,9 @@ public abstract class BaseServiceTest {
         skillRepository.deleteAll();
 
         //用户
-        gordon = createUser("gordon", "gordon");
-        traveller_ing = createUser("traveller_ing", "traveller_ing");
-        java = createUser("java", "java");
+        gordon = createUser("gordon", "gordon","438@qq.com");
+        traveller_ing = createUser("traveller_ing", "traveller_ing","666@qq.com");
+        java = createUser("java", "java","java@qq.com");
         accountRepository.saveAndFlush(gordon);
         accountRepository.saveAndFlush(traveller_ing);
         accountRepository.saveAndFlush(java);
@@ -670,10 +670,11 @@ public abstract class BaseServiceTest {
      * @param password
      * @return
      */
-    protected SkillijUser createUser(String username, String password) {
+    protected SkillijUser createUser(String username, String password, String mail) {
         SkillijUser result = new SkillijUser();
         result.setUsername(username);
         result.setPassword(password);
+        result.setMail(mail);
 
         return result;
     }

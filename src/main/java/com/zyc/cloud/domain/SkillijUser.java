@@ -24,6 +24,7 @@ public class SkillijUser implements Serializable{
     @Column(name = "password", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户密码'")
     private String password;
 
+    @Column(name = "mail", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户邮箱'")
     private String mail;
 
     public Long getId() {
