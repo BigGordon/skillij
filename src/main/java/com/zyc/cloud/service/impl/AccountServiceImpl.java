@@ -1,5 +1,6 @@
 package com.zyc.cloud.service.impl;
 
+import com.zyc.cloud.domain.SkillijUser;
 import com.zyc.cloud.repository.AccountRepository;
 import com.zyc.cloud.service.AccountService;
 import org.springframework.stereotype.Service;
@@ -36,4 +37,32 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * 用户注册信息录入
+     * @param mail
+     * @param userName
+     * @param passwd
+     * @return
+     */
+    @Override
+    public String getRegisterResult(String mail, String userName, String passwd) {
+        SkillijUser existedMail = accountRepository.findSkillijUserByMail(mail);
+
+        if(existedMail != null) {
+            return "邮箱已被注册";
+        }
+
+        SkillijUser existedUserName = accountRepository.findSkillijUserByUserName(userName);
+
+        if(existedUserName != null) {
+            return "用户名已注册";
+        }
+
+        SkillijUser newSkillijUser = new SkillijUser();
+        newSkillijUser.setUsername(userName);
+        newSkillijUser.setMail(mail);
+        newSkillijUser.setPassword(passwd);
+        accountRepository.saveAndFlush(newSkillijUser);
+        return "注册成功";
+    }
 }

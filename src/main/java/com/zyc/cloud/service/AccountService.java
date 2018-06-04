@@ -15,4 +15,13 @@ public interface AccountService {
      */
     String getLoginResult(String user, String passwd);
 
+    /**
+     * 用户注册信息录入
+     * @param mail
+     * @param userName
+     * @param passwd
+     * @return
+     */
+    String getRegisterResult(String mail, String userName, String passwd);
+
 }

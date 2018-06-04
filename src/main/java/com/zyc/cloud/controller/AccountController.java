@@ -43,4 +43,30 @@ public class AccountController {
 
         return JsonResult.jsonWithRecord(jsonData);
     }
+
+
+    @ApiOperation(value = "账号注册")
+    @PostMapping(value = "/account/register")
+    public String userRegister(@RequestParam("mail")     String mail,
+                               @RequestParam("userName") String userName,
+                               @RequestParam("passwd")   String passwd) {
+
+        if (StringUtils.isEmpty(mail)) {
+            return JsonResult.jsonWithErrMsg("未填写邮箱地址");
+        }
+
+        if (StringUtils.isEmpty(userName)) {
+            return JsonResult.jsonWithErrMsg("未填写用户名");
+        }
+
+        if (StringUtils.isEmpty(passwd)) {
+            return JsonResult.jsonWithErrMsg("未填写密码");
+        }
+
+        String registerResult = accountService.getRegisterResult(mail, userName, passwd);
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("registerResult", registerResult);
+
+        return JsonResult.jsonWithRecord(jsonData);
+    }
 }

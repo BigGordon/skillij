@@ -17,6 +17,7 @@ public class SkillijUser {
     @Id
     @GeneratedValue
     private Integer id;
+    private String mail;
     private String username;
     private String password;
 
@@ -27,6 +28,10 @@ public class SkillijUser {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String getMail() { return mail; }
+
+    public void setMail(String mail) { this.mail = mail; }
 
     public String getUsername() {
         return username;
