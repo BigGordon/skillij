@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--用于快速新建页面-->
+    <meta charset="UTF-8">
+    <title>Templet</title>
+
+    <!-- 引入 Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义css -->
+    <link href="css/templet.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- 全局js -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<!-- 自定义js -->
+<script src="js/module/templet.js"></script>
+
+<script type="text/javascript">
+    //构建并初始化页面管理对象
+    var fileManage = new templet();
+    $(document).ready(function () {
+        fileManage.init();
+    });
+</script>
+<!-- 第三方插件 -->
+</body>
+</html>
