@@ -55,4 +55,13 @@ public interface AccountService {
      * @return
      */
     String changePassword(String username, String oldPasswd, String newPasswd);
+    /**
+     * 用户注册信息录入
+     * @param mail
+     * @param userName
+     * @param passwd
+     * @return
+     */
+    String getRegisterResult(String mail, String userName, String passwd);
+
 }

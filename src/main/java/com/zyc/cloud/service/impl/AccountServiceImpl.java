@@ -134,6 +134,7 @@ public class AccountServiceImpl implements AccountService {
         return mainSkillTree;
     }
 
+
     /**
      * 根据用户名取得用户实例对象
      * @param username
@@ -156,7 +157,6 @@ public class AccountServiceImpl implements AccountService {
         if (username == null) {
             return false;
         }
-
         SkillijUser userBean = findByUsername(username);
         if (userBean == null) {
             return false;
@@ -185,5 +185,33 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.updatePasswordById(user.getId(), newPasswd);
             return "修改密码成功";
         }
+    }
+    /**
+     * 用户注册信息录入
+     * @param mail
+     * @param userName
+     * @param passwd
+     * @return
+     */
+    @Override
+    public String getRegisterResult(String mail, String userName, String passwd) {
+        SkillijUser existedMail = accountRepository.findSkillijUserByMail(mail);
+
+        if(existedMail != null) {
+            return "邮箱已被注册";
+        }
+
+        SkillijUser existedUserName = accountRepository.findSkillijUserByUserName(userName);
+
+        if(existedUserName != null) {
+            return "用户名已注册";
+        }
+
+        SkillijUser newSkillijUser = new SkillijUser();
+        newSkillijUser.setUsername(userName);
+        newSkillijUser.setMail(mail);
+        newSkillijUser.setPassword(passwd);
+        accountRepository.saveAndFlush(newSkillijUser);
+        return "注册成功";
     }
 }

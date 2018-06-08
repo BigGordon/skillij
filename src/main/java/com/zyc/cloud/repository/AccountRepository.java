@@ -56,4 +56,21 @@ public interface AccountRepository extends JpaRepository<SkillijUser, Long>, Jpa
     @Transactional
     @Query("update SkillijUser u set u.password = ?2 where u.id = ?1")
     void updatePasswordById(Long id, String password);
+
+    /**
+     * 根据邮箱找到用户实例
+     * @param mail
+     * @return
+     */
+    @Query("select u from SkillijUser u where u.mail = ?1")
+    SkillijUser  findSkillijUserByMail(String mail);
+
+    /**
+     * 根据用户名找到用户实例
+     * @param userName
+     * @return
+     */
+    @Query("select u from SkillijUser u where u.username = ?1")
+    SkillijUser  findSkillijUserByUserName(String userName);
+
 }

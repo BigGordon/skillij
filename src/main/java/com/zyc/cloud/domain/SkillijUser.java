@@ -25,6 +25,9 @@ public class SkillijUser implements Serializable{
     @Column(name = "password", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户密码'")
     private String password;
 
+    @Column(name = "mail", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '用户邮箱'")
+    private String mail;
+
 //    @Column(name = "salt", columnDefinition = "VARCHAR(200) NOT NULL COMMENT '加密密码的盐'")
 //    private String salt;//加密密码的盐
 
@@ -43,6 +46,10 @@ public class SkillijUser implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getMail() { return mail; }
+
+    public void setMail(String mail) { this.mail = mail; }
 
     public String getUsername() {
         return username;

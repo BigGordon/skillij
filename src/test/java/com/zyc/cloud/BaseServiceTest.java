@@ -255,18 +255,18 @@ public abstract class BaseServiceTest {
         roleRepository.saveAndFlush(user);
 
         //用户
-        gordon = createUser("gordon", "gordon");
+        gordon = createUser("gordon", "gordon","438@qq.com");
         List<SkillijRole> gordonRoles = new ArrayList<>();
         gordonRoles.add(admin);
         gordonRoles.add(user);
         gordon.setRoles(gordonRoles);
 
-        traveller_ing = createUser("traveller_ing", "traveller_ing");
+        traveller_ing = createUser("traveller_ing", "traveller_ing","666@qq.com");
         List<SkillijRole> travellerRoles = new ArrayList<>();
         travellerRoles.add(user);
         traveller_ing.setRoles(travellerRoles);
 
-        java = createUser("java", "java");
+        java = createUser("java", "java","java@qq.com");
         List<SkillijRole> javaRoles = new ArrayList<>();
         javaRoles.add(admin);
         java.setRoles(javaRoles);
@@ -723,10 +723,11 @@ public abstract class BaseServiceTest {
      * @param password
      * @return
      */
-    protected SkillijUser createUser(String username, String password) {
+    protected SkillijUser createUser(String username, String password, String mail) {
         SkillijUser result = new SkillijUser();
         result.setUsername(username);
         result.setPassword(password);
+        result.setMail(mail);
 
         return result;
     }
