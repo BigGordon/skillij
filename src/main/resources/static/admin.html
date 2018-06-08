@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Skillij Admin</title>
+    <title>Skillij 我的技能树管理</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -39,7 +39,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="admin.html">Skillij</a>
+                <a id="welcome" class="navbar-brand" href="admin.html">Skillij</a>
+                <a class="navbar-brand" href="index.html">返回首页</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -283,13 +284,13 @@
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> 账号<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="panels-wells.html">更改昵称</a>
+                                    <a href="#" id="changeMailBtn">更改邮箱</a>
                                 </li>
                                 <li>
-                                    <a href="buttons.html">更改密码</a>
+                                    <a href="#" id="changePasswdBtn">更改密码</a>
                                 </li>
                                 <li>
-                                    <a href="buttons.html">退出登录</a>
+                                    <a href="#" id="logoutBtn">退出登录</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -308,8 +309,12 @@
     </div>
     <!-- /#wrapper -->
 
+
+
     <!-- jQuery -->
     <script src="js/jquery-3.3.1.min.js"></script>
+
+    <script src="js/layer/layer.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -318,6 +323,7 @@
     <script src="js/metisMenu.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
+    <script src="js/skillijUtil.js"></script>
     <script src="js/module/admin.js"></script>
 
     <script type="text/javascript">

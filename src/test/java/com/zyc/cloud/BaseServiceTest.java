@@ -1,14 +1,20 @@
 package com.zyc.cloud;
 
+import com.zyc.cloud.domain.SkillijPermission;
+import com.zyc.cloud.domain.SkillijRole;
 import com.zyc.cloud.domain.SkillijUser;
 import com.zyc.cloud.domain.UserSkill;
 import com.zyc.cloud.repository.AccountRepository;
+import com.zyc.cloud.repository.PermissionRepository;
+import com.zyc.cloud.repository.RoleRepository;
 import com.zyc.cloud.repository.SkillRepository;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2018/3/27.
@@ -24,10 +30,24 @@ public abstract class BaseServiceTest {
     @Resource
     private SkillRepository skillRepository;
 
+    @Resource
+    private RoleRepository roleRepository;
+
+    @Resource
+    private PermissionRepository permissionRepository;
+
     //用户
     protected SkillijUser gordon;
     protected SkillijUser traveller_ing;
     protected SkillijUser java;
+
+    //角色
+    protected SkillijRole admin;
+    protected SkillijRole user;
+
+    //权限
+    protected SkillijPermission sysTreeOperation;
+    protected SkillijPermission userTreeOperation;
 
     //gordon的技能
     protected UserSkill gJavaProgram;
@@ -213,11 +233,44 @@ public abstract class BaseServiceTest {
     public void initTestData() throws Exception {
         accountRepository.deleteAll();
         skillRepository.deleteAll();
+        roleRepository.deleteAll();
+        permissionRepository.deleteAll();
+
+        //权限
+        userTreeOperation = createPermission("用户技能树操作");
+        sysTreeOperation = createPermission("系统技能树操作");
+        permissionRepository.saveAndFlush(userTreeOperation);
+        permissionRepository.saveAndFlush(sysTreeOperation);
+
+        //角色
+        List<SkillijPermission> adminPermissions = new ArrayList<>();
+        adminPermissions.add(sysTreeOperation);
+        adminPermissions.add(userTreeOperation);
+        admin = createRole("管理员", "Skillij管理员", adminPermissions);
+        roleRepository.saveAndFlush(admin);
+
+        List<SkillijPermission> userPermissions = new ArrayList<>();
+        userPermissions.add(userTreeOperation);
+        user = createRole("用户", "Skillij用户", userPermissions);
+        roleRepository.saveAndFlush(user);
 
         //用户
         gordon = createUser("gordon", "gordon");
+        List<SkillijRole> gordonRoles = new ArrayList<>();
+        gordonRoles.add(admin);
+        gordonRoles.add(user);
+        gordon.setRoles(gordonRoles);
+
         traveller_ing = createUser("traveller_ing", "traveller_ing");
+        List<SkillijRole> travellerRoles = new ArrayList<>();
+        travellerRoles.add(user);
+        traveller_ing.setRoles(travellerRoles);
+
         java = createUser("java", "java");
+        List<SkillijRole> javaRoles = new ArrayList<>();
+        javaRoles.add(admin);
+        java.setRoles(javaRoles);
+
         accountRepository.saveAndFlush(gordon);
         accountRepository.saveAndFlush(traveller_ing);
         accountRepository.saveAndFlush(java);
@@ -698,6 +751,36 @@ public abstract class BaseServiceTest {
         result.setLevel(level);
 
         return result;
+    }
+
+    /**
+     * 创建权限角色
+     * @param roleName
+     * @param desciription
+     * @param permissions
+     * @return
+     */
+    protected SkillijRole createRole(String roleName, String desciription, List<SkillijPermission> permissions) {
+        SkillijRole role = new SkillijRole();
+
+        role.setRole(roleName);
+        role.setDescription(desciription);
+        role.setPermissions(permissions);
+
+        return role;
+    }
+
+    /**
+     * 创建权限
+     * @param permissionName
+     * @return
+     */
+    protected SkillijPermission createPermission(String permissionName) {
+        SkillijPermission permission = new SkillijPermission();
+
+        permission.setPermission(permissionName);
+
+        return permission;
     }
 
 

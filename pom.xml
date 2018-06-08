@@ -67,6 +67,17 @@
 			<version>1.2.32</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+
 		<!-- Only required to run tests in an IntelliJ IDEA that bundles an older version -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>

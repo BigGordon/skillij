@@ -3,8 +3,10 @@ package com.zyc.cloud.repository;
 import com.zyc.cloud.domain.SkillijUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -37,4 +39,21 @@ public interface AccountRepository extends JpaRepository<SkillijUser, Long>, Jpa
     @Query("select u.id from SkillijUser u where u.username = ?1")
     Long getIdByUsername(String username);
 
+    /**
+     * 根据用户名查询用户对象
+     * @param username
+     * @return
+     */
+    @Query("select u from SkillijUser u where u.username = ?1")
+    SkillijUser findByUsername(String username);
+
+    /**
+     * 更改用户密码
+     * @param id
+     * @param password
+     */
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("update SkillijUser u set u.password = ?2 where u.id = ?1")
+    void updatePasswordById(Long id, String password);
 }

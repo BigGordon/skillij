@@ -8,10 +8,24 @@ admin = function() {
      * 管理页面初始化
      */
     me.init = function () {
+        //登录状态检查
+        me._loginCheck();
         //模板初始化
         me._initTemplet();
         //左侧控制按钮初始化
         me._initLeftBtns();
+        //欢迎栏初始化
+        me._initWelcomeWords();
+    };
+
+    /**
+     * 检查token有效性
+     * @private
+     */
+    me._loginCheck = function () {
+        SkillijUtil.loginCheck(null, function () {
+            window.location.href = "login.html";
+        });
     };
 
 
@@ -72,6 +86,12 @@ admin = function() {
     me._initLeftBtns = function () {
         //“编辑”按钮
         me._initEditBtn();
+        //“更改邮箱”按钮
+        me._initChangeMailBtn();
+        //“更改密码”按钮
+        me._initChangePasswdBtn();
+        //“退出登录”按钮
+        me._initLogoutBtn();
     };
 
     /**
@@ -84,6 +104,57 @@ admin = function() {
             pageWrapper.empty();
             pageWrapper.attr("src", "edit.html");
         })
+    };
+
+    /**
+     * 更改邮箱按钮
+     * @private
+     */
+    me._initChangeMailBtn = function () {
+        $("#changeMailBtn").on("click", function () {
+            var pageWrapper = $("#page-wrapper");
+            pageWrapper.empty();
+            pageWrapper.attr("src", "change_mail.html");
+        })
+    };
+
+    /**
+     * 更改密码按钮
+     * @private
+     */
+    me._initChangePasswdBtn = function () {
+        $("#changePasswdBtn").on("click", function () {
+            var pageWrapper = $("#page-wrapper");
+            pageWrapper.empty();
+            pageWrapper.attr("src", "change_passwd.html");
+        })
+    };
+
+    /**
+     * 退出登录按钮
+     * @private
+     */
+    me._initLogoutBtn = function () {
+        $("#logoutBtn").on("click", function () {
+            //弹出确认登录提示框
+            layer.open({
+                title: '温馨提示',
+                content: '确定要退出登录吗',
+                btn: ['确定', '取消'],
+                yes: function () {
+                    localStorage.removeItem("currentUser_token");
+                    window.location.href = "index.html";
+                }});
+        })
+    };
+
+    /**
+     * 欢迎文字初始化
+     * @private
+     */
+    me._initWelcomeWords = function () {
+        var username = localStorage.getItem("currentUser_name");
+        $("#welcome").html("Skillij 欢迎您，" + username);
     };
 
 

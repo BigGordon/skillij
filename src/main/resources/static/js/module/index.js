@@ -12,10 +12,27 @@ index = function () {
      * index页面初始化
      */
     me.init = function () {
-        //登录按钮
+        //登录状态判断
+        me._initLoginStatus();
+        //demo账号按钮
         me._initSideBarBtn();
         //初始化java演示
         me._initDemo();
+    };
+
+    /**
+     * 根据登录状态更改导航栏
+     * @private
+     */
+    me._initLoginStatus = function () {
+        SkillijUtil.loginCheck(function () {
+            $("#loginBtn").hide();
+            $("#registerBtn").hide();
+            var username = localStorage.getItem("currentUser_name");
+            var adminBtn = $("#adminBtn")
+            adminBtn.html(username + " 的管理平台");
+            adminBtn.show();
+        }, null);
     };
 
     /**

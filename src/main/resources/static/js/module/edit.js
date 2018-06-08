@@ -344,7 +344,7 @@ edit = function () {
             url: "/edit/nodes",
             async: false,//为了支持表格功能不能异步
             data: {
-                user: "gordon"//TODO: 需要根据不同用户进行设置
+                user: localStorage.getItem("currentUser_name")
             },
             success: function (res) {
                 var resJson = JSON.parse(res);

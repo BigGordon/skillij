@@ -6,10 +6,12 @@ import com.zyc.cloud.dto.SkillTreeDto;
 import com.zyc.cloud.repository.AccountRepository;
 import com.zyc.cloud.repository.SkillRepository;
 import com.zyc.cloud.service.AccountService;
+import com.zyc.cloud.utils.JWTUtil;
 import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +134,56 @@ public class AccountServiceImpl implements AccountService {
         return mainSkillTree;
     }
 
+    /**
+     * 根据用户名取得用户实例对象
+     * @param username
+     * @return
+     */
+    @Override
+    public SkillijUser findByUsername(String username) {
+        return accountRepository.findByUsername(username);
+    }
 
+    /**
+     * 校验token有效性
+     * @param token
+     * @return
+     */
+    @Override
+    public Boolean getTokenValidity(String token) {
+        // 解密获得username，用于和数据库进行对比
+        String username = JWTUtil.getUsername(token);
+        if (username == null) {
+            return false;
+        }
 
+        SkillijUser userBean = findByUsername(username);
+        if (userBean == null) {
+            return false;
+        }
+
+        if (! JWTUtil.verify(token, username, userBean.getPassword())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 修改密码
+     * @param username
+     * @param oldPasswd
+     * @param newPasswd
+     * @return
+     */
+    @Override
+    public String changePassword(String username, String oldPasswd, String newPasswd) {
+        SkillijUser user = findByUsername(username);
+        if (!user.getPassword().equals(oldPasswd)) {
+            return "旧密码错误";
+        } else {
+            accountRepository.updatePasswordById(user.getId(), newPasswd);
+            return "修改密码成功";
+        }
+    }
 }

@@ -8,9 +8,25 @@ login = function () {
      * login页面初始化
      */
     me.init = function () {
+        //检查登录状态，已登录则跳转
+        me._redirectIfLogin();
         //登录按钮
         me._initLoginBtn();
-    }
+    };
+
+    /**
+     * 检查登录状态，已登录则跳转
+     * @private
+     */
+    me._redirectIfLogin = function () {
+        //若token已失效则不用跳转
+        SkillijUtil.loginCheck(function () {
+            var token = localStorage.getItem("currentUser_token");
+            if (token != null) {
+                window.location.href = "admin.html";
+            }
+        }, null);
+    };
 
     /**
      * 初始化登录按钮
@@ -22,12 +38,12 @@ login = function () {
             var passwd = $("#inputPassword").val();
 
             if (user == null || user == "") {
-                alert("请输入账号");
+                layer.open({title: '温馨提示', content: '请输入账号'});
                 return;
             }
 
             if (passwd == null || passwd == "") {
-                alert("请输入密码");
+                layer.open({title: '温馨提示', content: '请输入密码'});
                 return;
             }
 
@@ -41,8 +57,20 @@ login = function () {
                 },
                 success: function (res) {
                     var resJson = JSON.parse(res);
-                    alert(resJson.data.loginResult);
-                    $(location).attr('href', 'admin.html');
+                    var result = resJson.data.loginResult;
+                    var token = resJson.data.token;
+                    if (result === "登录成功") {
+                        //将用户名和jwt token存入localStorage
+                        localStorage.setItem("currentUser_name",user);
+                        localStorage.setItem("currentUser_token",token);
+                        window.location.href = "admin.html";
+                    } else {
+                        layer.open({
+                            title: '温馨提示',
+                            content: result
+                        });
+                        // alert(result);
+                    }
                 },
                 error: function (e) {
                     alert("请求出错！");
@@ -50,7 +78,8 @@ login = function () {
                 
             });
         });
-    }
+    };
+
 
     return me;
-}
+};

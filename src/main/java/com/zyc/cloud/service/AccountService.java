@@ -1,5 +1,6 @@
 package com.zyc.cloud.service;
 
+import com.zyc.cloud.domain.SkillijUser;
 import com.zyc.cloud.dto.SkillTreeDto;
 
 import java.util.List;
@@ -32,4 +33,26 @@ public interface AccountService {
      */
     SkillTreeDto getUserSkillTree(String user);
 
+    /**
+     * 根据用户名找到用户对象
+     * @param username
+     * @return
+     */
+    SkillijUser findByUsername(String username);
+
+    /**
+     * 检验token有效性
+     * @param token
+     * @return
+     */
+    Boolean getTokenValidity(String token);
+
+    /**
+     * 修改密码，返回修改结果
+     * @param username
+     * @param oldPasswd
+     * @param newPasswd
+     * @return
+     */
+    String changePassword(String username, String oldPasswd, String newPasswd);
 }
