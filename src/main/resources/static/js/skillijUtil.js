@@ -3,6 +3,11 @@ var SkillijUtil = SkillijUtil || {
 
 (function ($) {
     SkillijUtil = $.extend(SkillijUtil, {
+        /**
+         * 检查token有效性，确定登录状态
+         * @param onLoginAlready
+         * @param onTokenInvalid
+         */
         loginCheck: function (onLoginAlready, onTokenInvalid) {
             $.ajax({
                 type: "GET",
@@ -29,6 +34,6 @@ var SkillijUtil = SkillijUtil || {
                 }
 
             });
-        }
+        },
     });
 })(jQuery);

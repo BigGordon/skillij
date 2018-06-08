@@ -33,6 +33,15 @@ change_passwd = function () {
                 me._warn("新旧密码相同");
                 return false;
             }
+
+            //密码格式校验
+            var reg = /^.{6,20}$/;
+            var passwdOK = reg.test(newPasswd);
+            if(!passwdOK) {
+                me._warn( "您输入的密码字符长度有误，合法长度为6-20个字符" );
+                return false;
+            }
+
             var newPasswd_again = $("#reInputNewPassword").val();
             if (newPasswd_again == null || $.trim(newPasswd_again) === "") {
                 me._warn("请再次输入新密码");
@@ -42,8 +51,6 @@ change_passwd = function () {
                 me._warn("新密码输入不一致");
                 return false;
             }
-
-            //TODO: 密码格式校验
 
             var username = localStorage.getItem("currentUser_name");
             if (username === null) {
