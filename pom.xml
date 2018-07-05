@@ -4,12 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.zyc</groupId>
-	<artifactId>cloud</artifactId>
+	<artifactId>skillij-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
-	<name>cloud</name>
-	<description>Project for Spring Boot</description>
+	<name>skillij-parent</name>
+	<description>Parent Project for Skillij</description>
+
+	<modules>
+		<module>skillij-server</module>
+		<module>skillij-common</module>
+	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
