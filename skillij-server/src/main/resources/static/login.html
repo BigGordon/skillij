@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+
+    <!-- 引入 Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义css -->
+    <link href="css/login.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="form-signin">
+        <h2 class="form-signin-heading">账号登录</h2>
+        <label for="inputEmail" class="sr-only">账号</label>
+        <input  type="text" id="inputEmail" class="form-control" placeholder="账号" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="密码" required="">
+        <!--<div class="checkbox">-->
+            <!--<label>-->
+                <!--<input type="checkbox" value="remember-me"> 记住账号-->
+            <!--</label>-->
+        <!--</div>-->
+        <button id="btn-login" class="btn btn-lg btn-primary btn-block" type="submit" style="pointer-events: auto;">登录
+        </button>
+    </div>
+
+</div>
+
+<!-- 全局js -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/layer/layer.js"></script>
+
+<!-- 自定义js -->
+<script src="js/skillijUtil.js"></script>
+<script src="js/module/login.js"></script>
+
+<script type="text/javascript">
+    //构建并初始化页面管理对象
+    var fileManage = new login();
+    $(document).ready(function () {
+        fileManage.init();
+    });
+</script>
+<!-- 第三方插件 -->
+
+</body>
+</html>
