@@ -5,6 +5,7 @@ import com.zyc.skillijcommon.domain.UserSkill;
 import com.zyc.skillijserver.dto.SkillTreeDto;
 import com.zyc.skillijserver.repository.AccountRepository;
 import com.zyc.skillijserver.repository.SkillRepository;
+import com.zyc.skillijserver.repository.TreeRepository;
 import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Resource
     private SkillRepository skillRepository;
+
+    @Resource
+    private TreeRepository treeRepository;
 
     /**
      * 校验用户登录
@@ -79,7 +83,8 @@ public class AccountServiceImpl implements AccountService {
     public SkillTreeDto getUserSkillTree(String user) {
         SkillTreeDto mainSkillTree = new SkillTreeDto(user);
         Long id = accountRepository.getIdByUsername(user);
-        List<UserSkill> userSkills = skillRepository.findUserSkillsByUserId(id);
+        List<Long> treeIds = treeRepository.getTreeIdByUserId(id);
+        List<UserSkill> userSkills = skillRepository.findUserSkillsByUserIdAndTreeId(id, treeIds.get(0));
         //创建并装载各级技能树
         Map<Long, Map<Long, SkillTreeDto>> levelSkills = new HashMap<>();
         for (UserSkill userSkill: userSkills) {

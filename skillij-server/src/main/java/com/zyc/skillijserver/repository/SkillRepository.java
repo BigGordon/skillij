@@ -18,10 +18,11 @@ public interface SkillRepository extends JpaRepository<UserSkill, Long>, JpaSpec
     /**
      * 根据用户ID找到用户技能
      * @param userId
+     * @param treeId
      * @return
      */
-    @Query("select u from UserSkill u where u.userId = ?1")
-    List<UserSkill> findUserSkillsByUserId(Long userId);
+    @Query("select u from UserSkill u where u.userId = ?1 and u.treeId = ?2")
+    List<UserSkill> findUserSkillsByUserIdAndTreeId(Long userId, Long treeId);
 
     /**
      * 根据技能ID找到技能名
@@ -44,8 +45,8 @@ public interface SkillRepository extends JpaRepository<UserSkill, Long>, JpaSpec
      * @param skillName
      * @return
      */
-    @Query("select u from UserSkill u where u.skillName = ?1 and u.userId = ?2")
-    UserSkill findUserSkillBySkillNameAndUserId(String skillName, Long userId);
+    @Query("select u from UserSkill u where u.skillName = ?1 and u.userId = ?2 and u.treeId = ?3")
+    UserSkill findUserSkillBySkillNameAndUserIdAndTreeId(String skillName, Long userId, Long treeId);
 
     /**
      * 根据节点id修改技能节点

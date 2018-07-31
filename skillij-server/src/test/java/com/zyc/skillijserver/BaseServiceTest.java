@@ -1,18 +1,13 @@
 package com.zyc.skillijserver;
 
-import com.zyc.skillijcommon.domain.SkillijPermission;
-import com.zyc.skillijcommon.domain.SkillijRole;
-import com.zyc.skillijcommon.domain.SkillijUser;
-import com.zyc.skillijcommon.domain.UserSkill;
-import com.zyc.skillijserver.repository.AccountRepository;
-import com.zyc.skillijserver.repository.PermissionRepository;
-import com.zyc.skillijserver.repository.RoleRepository;
-import com.zyc.skillijserver.repository.SkillRepository;
+import com.zyc.skillijcommon.domain.*;
+import com.zyc.skillijserver.repository.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +31,19 @@ public abstract class BaseServiceTest {
     @Resource
     private PermissionRepository permissionRepository;
 
+    @Resource
+    private TreeRepository treeRepository;
+
     //用户
     protected SkillijUser gordon;
     protected SkillijUser traveller_ing;
     protected SkillijUser java;
+
+    //用户拥有的技能树
+    protected UserTree javaOfgordon;
+    protected UserTree cppOfgordon;
+    protected UserTree javaOftraveller_ing;
+    protected UserTree javaOfjava;
 
     //角色
     protected SkillijRole admin;
@@ -59,6 +63,7 @@ public abstract class BaseServiceTest {
     protected UserSkill gCollection;
     protected UserSkill gJavaee;
     protected UserSkill gFramework;
+    protected UserSkill gCppProgram;
 
     //java的技能
     protected UserSkill jJavaProgram;
@@ -230,11 +235,14 @@ public abstract class BaseServiceTest {
     protected UserSkill jDisasterRecovery;
     protected UserSkill jRemote;
 
+    private Long currentTreeId;//当前技能点所属技能树id
+
     public void initTestData() throws Exception {
         accountRepository.deleteAll();
         skillRepository.deleteAll();
         roleRepository.deleteAll();
         permissionRepository.deleteAll();
+        treeRepository.deleteAll();
 
         //权限
         userTreeOperation = createPermission("用户技能树操作");
@@ -275,7 +283,20 @@ public abstract class BaseServiceTest {
         accountRepository.saveAndFlush(traveller_ing);
         accountRepository.saveAndFlush(java);
 
-        //gordon的技能
+        //用户的技能树
+        javaOfgordon = createTree(gordon.getId(), "Java");
+        cppOfgordon = createTree(gordon.getId(), "C++");
+        treeRepository.saveAndFlush(javaOfgordon);
+        treeRepository.saveAndFlush(cppOfgordon);
+
+        javaOftraveller_ing = createTree(traveller_ing.getId(), "Java");
+        treeRepository.saveAndFlush(javaOftraveller_ing);
+
+        javaOfjava = createTree(java.getId(), "Java");
+        treeRepository.saveAndFlush(javaOfjava);
+
+        //gordon的Java技能
+        currentTreeId = javaOfgordon.getTreeId();//设置以下节点所属技能树
         Long first = 0L;
         gJavaProgram = createSkill("Java编程", 3, null, gordon.getId(), first, 0L);
         gJvm = createSkill("JVM", 2, null, gordon.getId(), first, 0L);
@@ -298,7 +319,14 @@ public abstract class BaseServiceTest {
         skillRepository.saveAndFlush(gJavaee);
         skillRepository.saveAndFlush(gFramework);
 
+        //gordon的C++技能
+        currentTreeId = cppOfgordon.getTreeId();//设置以下节点所属技能树
+        gCppProgram = createSkill("C++编程", 3, null, gordon.getId(), first, 0L);
+        skillRepository.saveAndFlush(gCppProgram);
+
+
         //完整的java技能树
+        currentTreeId = javaOfjava.getTreeId();//设置以下节点所属技能树
         jJavaProgram = createSkill("Java编程", 6, null, java.getId(), first, 0L);
         jJvm = createSkill("JVM", 6, null, java.getId(), first, 0L);
         jDesignPattern = createSkill("设计模式", 6, null, java.getId(), first, 0L);
@@ -718,6 +746,20 @@ public abstract class BaseServiceTest {
     }
 
     /**
+     * 创建用户的技能树
+     * @param userId
+     * @param treeName
+     * @return
+     */
+    private UserTree createTree(Long userId, String treeName) {
+        UserTree result = new UserTree();
+        result.setUserId(userId);
+        result.setTreeName(treeName);
+
+        return result;
+    }
+
+    /**
      * 创建用户
      * @param username
      * @param password
@@ -750,6 +792,8 @@ public abstract class BaseServiceTest {
         result.setUserId(userId);
         result.setParentId(parentId);
         result.setLevel(level);
+
+        result.setTreeId(currentTreeId);
 
         return result;
     }

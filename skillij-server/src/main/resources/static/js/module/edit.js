@@ -26,17 +26,106 @@ edit = function () {
 
     var status;
 
+    var currentTreeId;
+    var currentTreeName;
+
+    var reloadFlag = 0;
+
     /**
      * edit页面初始化
      */
     me.init = function () {
+
         //模板初始化
         me._initTemplet();
-        //加载技能树节点表
-        me._initNodeTable();
+        //技能树标题栏初始化
+        me._initTreeTitle();
+
+        if(localStorage.getItem("reloadFlag") == "1") //判断是否为1来确定是否局部刷新页面中的表
+            currentTreeId = localStorage.getItem("currentTreeId");
+
+        //页面刷新reloadFlag初始化
+        me._initReloadFlag();
+        //加载节点
+        me._initNodeTable(currentTreeId);//使用第一个id加载节点
         //按钮初始化
         me._initBtns();
     };
+
+    /**
+     * 页面刷新reloadFlag初始化
+     * @private
+     */
+    me._initReloadFlag = function() {
+        reloadFlag = 0;
+        localStorage.setItem("reloadFlag",reloadFlag.toString());
+    }
+
+    /**
+     * 技能树标题栏初始化
+     * @private
+     */
+    me._initTreeTitle = function () {
+        //技能树标题栏树名列表初始化
+        me._initTreeTitleName();
+        //技能树标题栏树名按钮初始化
+        me._initTreeTitleBtns();
+    }
+
+    /**
+     * 技能树标题栏树名列表初始化
+     * @private
+     */
+    me._initTreeTitleName = function() {
+        $.ajax({
+            type:"GET",
+            url:"edit/titles",
+            async:false,
+            data: {
+                user: localStorage.getItem("currentUser_name")
+            },
+            success: function (res) {
+                var resJson = JSON.parse(res);
+                var titles = resJson.data.treeTitles;
+                me._loadTitles(titles);
+                currentTreeId = titles[0].treeId;
+                currentTreeName = titles[0].treeName;
+                //window.location.reload();
+            },
+            error:function (e) {
+                alert("请求出错！");
+            }
+        })
+    }
+
+    me._loadTitles = function(titles) {
+        for (var i = 0;i <titles.length; i++) {
+            var title = titles[i];
+
+            var $newTreeBtn = $('#new-tree-btn');
+            $newTreeBtn.before("<a treeName=\"" + title.treeName.toString() + "\" treeId=\"" +
+                title.treeId.toString()+ "\" class=\"treeName\" href=\"#\">" + title.treeName.toString() + "</a>")
+        }
+    }
+
+
+    /**
+     * 技能树标题栏树名按钮初始化
+     * @private
+     */
+    me._initTreeTitleBtns = function() {
+        $("#skillTreeName").on('click','.treeName',function(){
+            currentTreeId = $(this).attr("treeId");
+            currentTreeName = $(this).attr("treeName");
+            reloadFlag = 1;
+            localStorage.setItem("currentTreeId",currentTreeId);
+            localStorage.setItem("currentTreeName",currentTreeName);
+            localStorage.setItem("reloadFlag",reloadFlag.toString());
+            //me._initNodeTable(currentTreeId);
+            window.location.reload();
+        });
+    }
+
 
     /**
      * 按钮初始化
@@ -53,7 +142,139 @@ edit = function () {
         me._initDeleteBtn();
         //新建按钮初始化
         me._initNewBtn();
+        //新增技能树按钮初始化
+        me._initNewTreeBtn();
+        //删除技能树按钮初始化
+        me._initDelTreeBtn();
+        //修改技能树名按钮初始化
+        me._initEditTreeBtn();
     };
+
+    /**
+     * 修改技能树名按钮初始化
+     * @private
+     */
+    me._initEditTreeBtn = function() {
+        $("#edit-tree-btn").on("click",function () {
+            layer.prompt({
+                formType:0,
+                value:"",
+                title:"请输入" + localStorage.getItem("currentTreeName") + "技能树新名称",
+                area:['800px','350px'],
+                yes: function (index, layero) {
+
+                    var newTreeName = layero.find(".layui-layer-input").val();
+                    if(newTreeName == null || newTreeName=="") {
+                        alert("请输入该技能树新名称！");
+                    }
+                    else {
+                        layer.close(index);
+                        $.ajax({
+                            type:"POST",
+                            url:"edit/editTree",
+                            async:true,
+                            data:{
+                                treeId:localStorage.getItem("currentTreeId"),
+                                userName:localStorage.getItem("currentUser_name"),
+                                newTreeName:newTreeName
+                            },
+                            success:function (res) {
+                                var resJson = JSON.parse(res);
+                                var result =resJson.data.editTreeResult;
+                                layer.open({title:'温馨提示',content:result,end:function(){
+                                        window.location.reload();
+                                    }});
+                            },
+                            error:function(e) {
+                                alert("请求出错！");
+                            }
+
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * 删除技能树按钮初始化
+     * @private
+     */
+    me._initDelTreeBtn = function() {
+        $("#del-tree-btn").on("click",function() {
+            layer.open({
+                title: '温馨提示',
+                content: '确定要删除'+localStorage.getItem("currentTreeName")+'吗？',
+                btn: ['确定', '取消'],
+                yes: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "edit/delTree",
+                        async: true,
+                        data: {
+                            treeId: localStorage.getItem("currentTreeId")
+                        },
+                        success: function (res) {
+                            layer.open({
+                                title: '温馨提示', content: '删除技能树成功', end: function () {
+                                    //重新加载表格
+                                    window.location.reload();
+                                }
+                            })
+                        },
+                        error: function (e) {
+                            alert("请求出错！");
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    /**
+     * 新增技能树按钮初始化
+     * @private
+     */
+    me._initNewTreeBtn = function() {
+        $("#new-tree-btn").on("click",function () {
+            layer.prompt({
+                formType: 0,
+                value: "",
+                title: '请输入新技能树名称',
+                area: ['800px', '350px'],//自定义文本域宽高
+                yes: function (index, layero) {
+
+                    var newTreeName = layero.find(".layui-layer-input").val();
+                    if (newTreeName == null || newTreeName == "") {
+                        alert("请输入技能树名称！");
+                    }
+                    else {
+                        layer.close(index);
+                        $.ajax({
+                            type: "POST",
+                            url: "edit/newTree",
+                            async: true,
+                            data: {
+                                newTreeName: newTreeName,
+                                user: localStorage.getItem("currentUser_name")
+                            },
+                            success: function (res) {
+                                var resJson = JSON.parse(res);
+                                var result = resJson.data.newTreeResult;
+                                layer.open({title: '温馨提示', content: result, end: function () {
+                                        //重新加载表格
+                                        window.location.reload();
+                                    }})
+                            },
+                            error:function (e) {
+                                alert("请求出错！");
+                            }
+                        });
+                    }
+                }
+            });
+        })
+    }
 
     /**
      * 新建按钮初始化
@@ -246,7 +467,9 @@ edit = function () {
             url: "/edit/revise",
             async: true,
             data: {
-                nodes: JSON.stringify(json)
+                nodes: JSON.stringify(json),
+                user: localStorage.getItem("currentUser_name"),
+                treeId: currentTreeId
             },
             success: function (res) {
                 var resJson = JSON.parse(res);
@@ -296,7 +519,9 @@ edit = function () {
             url: "/edit/new",
             async: true,
             data: {
-                nodes: JSON.stringify(aJson)
+                nodes: JSON.stringify(aJson),
+                user: localStorage.getItem("currentUser_name"),
+                treeId: currentTreeId
             },
             success: function (res) {
                 var resJson = JSON.parse(res);
@@ -337,14 +562,15 @@ edit = function () {
      * 加载技能树节点表
      * @private
      */
-    me._initNodeTable = function () {
+    me._initNodeTable = function (treeId) {
 
         $.ajax({
             type: "GET",
             url: "/edit/nodes",
             async: false,//为了支持表格功能不能异步
             data: {
-                user: localStorage.getItem("currentUser_name")
+                user: localStorage.getItem("currentUser_name"),
+                treeId: treeId
             },
             success: function (res) {
                 var resJson = JSON.parse(res);

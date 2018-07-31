@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zyc.skillijserver.dto.EditNodesDto;
+import com.zyc.skillijserver.dto.EditTreeTitleDto;
 import com.zyc.skillijserver.service.EditService;
 import com.zyc.skillijcommon.utils.JsonResult;
 import io.swagger.annotations.ApiOperation;
@@ -26,11 +27,56 @@ public class EditController {
     @Resource
     private EditService editService;
 
+    @ApiOperation(value = "修改技能树")
+    @PostMapping(value = "/edit/editTree")
+    public String getEditTree(@RequestParam("treeId") Long treeId,
+                              @RequestParam("userName") String userName,
+                              @RequestParam("newTreeName") String newTreeName) {
+        String editTreeResult = editService.editTree(newTreeName, userName, treeId);
+        JSONObject jsonEditTree = new JSONObject();
+        jsonEditTree.put("editTreeResult", editTreeResult);
+
+        return  JsonResult.jsonWithRecord(jsonEditTree);
+    }
+
+
+    @ApiOperation(value = "删除技能树")
+    @PostMapping(value = "/edit/delTree")
+    public String getDelTree(@RequestParam("treeId") Long treeId) {
+        editService.deleteTreeByTreeId(treeId);
+        return JsonResult.jsonWithSuccess();
+    }
+
+
+    @ApiOperation(value = "添加新技能树")
+    @PostMapping(value = "/edit/newTree")
+    public String getNewTree(@RequestParam("newTreeName") String newTreeName,
+                             @RequestParam("user") String user) {
+        String newTreeResult = editService.newTree(newTreeName, user);
+        JSONObject jsonNewTree = new JSONObject();
+        jsonNewTree.put("newTreeResult", newTreeResult);
+
+        return  JsonResult.jsonWithRecord(jsonNewTree);
+    }
+
+
+    @ApiOperation(value = "显示技能树标题栏树名列表")
+    @GetMapping(value = "/edit/titles")
+    public String getTreeTitle(@RequestParam("user") String user) {
+        List<EditTreeTitleDto> treeTitles = editService.getTitles(user);
+        JSONObject jsonTree = new JSONObject();
+        jsonTree.put("treeTitles", treeTitles);
+
+        return JsonResult.jsonWithRecord(jsonTree);
+
+    }
+
 
     @ApiOperation(value = "显示用户技能树节点")
     @GetMapping(value = "/edit/nodes")
-    public String getNodes(@RequestParam("user") String user) {
-        List<EditNodesDto> skillNodes = editService.getNodes(user);
+    public String getNodes(@RequestParam("user") String user,
+                           @RequestParam("treeId") Long treeId) {
+        List<EditNodesDto> skillNodes = editService.getNodes(user, treeId);
         JSONObject jsonData = new JSONObject();
         jsonData.put("skillNodes", skillNodes);
 
@@ -39,7 +85,9 @@ public class EditController {
 
     @ApiOperation(value = "修改用户技能树节点")
     @PostMapping(value = "/edit/revise")
-    public String reviseNodes(@RequestParam("nodes") String nodes) {
+    public String reviseNodes(@RequestParam("nodes") String nodes,
+                              @RequestParam("user") String username,
+                              @RequestParam("treeId") Long treeId) {
         JSONArray jsonArray = JSON.parseArray(nodes);
         List<EditNodesDto> editNodesList = new ArrayList<>();
         //将jsonObjective转化为SkillTreeDto对象
@@ -53,7 +101,7 @@ public class EditController {
             editNode.setSkillDescrip(jsonObject.getString("description"));
             editNodesList.add(editNode);
         }
-        String result = editService.reviseSkill(editNodesList, "gordon");//TODO: 用户名要根据用户不同更改
+        String result = editService.reviseSkill(editNodesList, username, treeId);
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("result", result);
@@ -71,14 +119,16 @@ public class EditController {
 
     @ApiOperation(value = "新建用户技能树节点")
     @PostMapping(value = "/edit/new")
-    public String newNode(@RequestParam("nodes") String nodes) {
+    public String newNode(@RequestParam("nodes") String nodes,
+                          @RequestParam("user") String username,
+                          @RequestParam("treeId") Long treeId) {
         JSONObject jsonObject = JSON.parseObject(nodes);
         EditNodesDto newNode = new EditNodesDto();
         newNode.setSkillName(jsonObject.getString("skillName"));
         newNode.setParentSkillName(jsonObject.getString("parentSkillName"));
         newNode.setProficiency(jsonObject.getInteger("proficiency"));
         newNode.setSkillDescrip(jsonObject.getString("description"));
-        String result = editService.newSkill(newNode, "gordon");//TODO: 用户名要根据用户不同更改
+        String result = editService.newSkill(newNode, username, treeId);
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("result", result);
