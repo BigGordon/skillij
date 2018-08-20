@@ -1,11 +1,9 @@
 package com.zyc.skillijserver;
 
 import com.zyc.skillijcommon.domain.mongodb.UserChat;
-import com.zyc.skillijcommon.domain.mysql.SkillijPermission;
-import com.zyc.skillijcommon.domain.mysql.SkillijRole;
-import com.zyc.skillijcommon.domain.mysql.SkillijUser;
-import com.zyc.skillijcommon.domain.mysql.UserSkill;
+import com.zyc.skillijcommon.domain.mysql.*;
 import com.zyc.skillijcommon.dto.UserMessage;
+import com.zyc.skillijserver.repository.TreeRepository;
 import com.zyc.skillijserver.repository.mongodb.ChatRepository;
 import com.zyc.skillijserver.repository.mysql.AccountRepository;
 import com.zyc.skillijserver.repository.mysql.PermissionRepository;
