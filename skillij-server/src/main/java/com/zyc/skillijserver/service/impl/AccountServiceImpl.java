@@ -1,10 +1,10 @@
 package com.zyc.skillijserver.service.impl;
 
-import com.zyc.skillijcommon.domain.SkillijUser;
-import com.zyc.skillijcommon.domain.UserSkill;
+import com.zyc.skillijcommon.domain.mysql.SkillijUser;
+import com.zyc.skillijcommon.domain.mysql.UserSkill;
 import com.zyc.skillijserver.dto.SkillTreeDto;
-import com.zyc.skillijserver.repository.AccountRepository;
-import com.zyc.skillijserver.repository.SkillRepository;
+import com.zyc.skillijserver.repository.mysql.AccountRepository;
+import com.zyc.skillijserver.repository.mysql.SkillRepository;
 import com.zyc.skillijserver.repository.TreeRepository;
 import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
@@ -189,6 +189,25 @@ public class AccountServiceImpl implements AccountService {
             return "修改密码成功";
         }
     }
+
+    /**
+     * 修改邮箱
+     * @param username
+     * @param password
+     * @param email
+     * @return
+     */
+    @Override
+    public String changeEmail(String username, String password, String email) {
+        SkillijUser user = findByUsername(username);
+        if (!user.getPassword().equals(password)) {
+            return "密码错误";
+        } else {
+            accountRepository.updateMailById(user.getId(), email);
+            return "修改邮箱成功";
+        }
+    }
+
     /**
      * 用户注册信息录入
      * @param mail

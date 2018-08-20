@@ -1,11 +1,11 @@
 package com.zyc.skillijserver.service.impl;
 
-import com.zyc.skillijcommon.domain.UserSkill;
-import com.zyc.skillijcommon.domain.UserTree;
+import com.zyc.skillijcommon.domain.mysql.UserSkill;
+import com.zyc.skillijcommon.domain.mysql.UserTree;
 import com.zyc.skillijserver.dto.EditNodesDto;
 import com.zyc.skillijserver.dto.EditTreeTitleDto;
-import com.zyc.skillijserver.repository.AccountRepository;
-import com.zyc.skillijserver.repository.SkillRepository;
+import com.zyc.skillijserver.repository.mysql.AccountRepository;
+import com.zyc.skillijserver.repository.mysql.SkillRepository;
 import com.zyc.skillijserver.repository.TreeRepository;
 import com.zyc.skillijserver.service.EditService;
 import org.springframework.stereotype.Service;

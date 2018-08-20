@@ -3,6 +3,7 @@ package com.zyc.skillijserver.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zyc.skillijcommon.constant.Constant;
 import com.zyc.skillijserver.dto.EditNodesDto;
 import com.zyc.skillijserver.dto.EditTreeTitleDto;
 import com.zyc.skillijserver.service.EditService;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +75,7 @@ public class EditController {
 
 
     @ApiOperation(value = "显示用户技能树节点")
-    @GetMapping(value = "/edit/nodes")
+    @GetMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/nodes")
     public String getNodes(@RequestParam("user") String user,
                            @RequestParam("treeId") Long treeId) {
         List<EditNodesDto> skillNodes = editService.getNodes(user, treeId);
@@ -84,7 +86,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "修改用户技能树节点")
-    @PostMapping(value = "/edit/revise")
+    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/revise")
     public String reviseNodes(@RequestParam("nodes") String nodes,
                               @RequestParam("user") String username,
                               @RequestParam("treeId") Long treeId) {
@@ -110,7 +112,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "删除用户技能树节点")
-    @PostMapping(value = "/edit/delete")
+    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/delete")
     public String deleteNodes(@RequestParam("ids") String skillIds) {
         List<Long> idList = JSON.parseArray(skillIds, Long.class);
         editService.deleteSkillByIds(idList);
@@ -118,7 +120,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "新建用户技能树节点")
-    @PostMapping(value = "/edit/new")
+    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/new")
     public String newNode(@RequestParam("nodes") String nodes,
                           @RequestParam("user") String username,
                           @RequestParam("treeId") Long treeId) {

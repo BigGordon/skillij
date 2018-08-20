@@ -17,9 +17,9 @@
         <h2 class="form-signin-heading">更改邮箱</h2>
         <label for="inputEmail" class="sr-only">新邮箱</label>
         <input  type="text" id="inputEmail" class="form-control" placeholder="新邮箱" required="" autofocus="" data-form-un="1517492738745.848">
-        <label for="inputPassword" class="sr-only">密码</label>
+        <label for="inputPassword" class="sr-only">账号密码</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="密码" required="" data-form-pw="1517492738745.848">
-        <button id="btn-login" class="btn btn-lg btn-primary btn-block" type="submit" data-form-sbm="1517492738745.848" style="pointer-events: auto;">确认修改
+        <button id="btn-confirm" class="btn btn-lg btn-primary btn-block" type="submit" data-form-sbm="1517492738745.848" style="pointer-events: auto;">确认修改
         </button>
     </div>
 
@@ -35,7 +35,7 @@
 
 <script type="text/javascript">
     //构建并初始化页面管理对象
-    var fileManage = new templet();
+    var fileManage = new change_mail();
     $(document).ready(function () {
         fileManage.init();
     });

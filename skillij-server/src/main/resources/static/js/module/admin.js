@@ -86,6 +86,10 @@ admin = function() {
     me._initLeftBtns = function () {
         //“编辑”按钮
         me._initEditBtn();
+        //“消息”按钮
+        me._initMessageBtn();
+        //“查找用户”按钮
+        me._initNewChatBtn();
         //“更改邮箱”按钮
         me._initChangeMailBtn();
         //“更改密码”按钮
@@ -103,6 +107,58 @@ admin = function() {
             var pageWrapper = $("#page-wrapper");
             pageWrapper.empty();
             pageWrapper.attr("src", "edit.html");
+        })
+    };
+
+    /**
+     * 消息按钮初始化
+     * @private
+     */
+    me._initMessageBtn = function () {
+        $("#messageBtn").on("click", function () {
+            var pageWrapper = $("#page-wrapper");
+            pageWrapper.empty();
+            pageWrapper.attr("src", "message.html");
+        })
+    };
+
+    /**
+     * 查找用户按钮初始化
+     * @private
+     */
+    me._initNewChatBtn = function () {
+        $("#newChatBtn").on("click", function () {
+            layer.prompt({
+                    title: '输入用户名',
+                    formType: 0
+                },
+                function(pass, index){
+                    $.ajax({
+                        type: "POST",
+                        url: "/chat/new-chat",
+                        async: true,
+                        data: {
+                            fromUser:localStorage.getItem("currentUser_name"),
+                            toUser: pass
+                        },
+
+                        success: function (res) {
+                            var resJson = JSON.parse(res);
+                            var result = resJson.data.addChatResult;
+                            if (result === "新建对话成功") {
+                                layer.close(index);
+                            }
+                            //刷新消息页面
+                            var pageWrapper = $("#page-wrapper");
+                            pageWrapper.empty();
+                            pageWrapper.attr("src", "message.html");
+                            layer.msg(result);
+                        },
+                        error: function (e) {
+                            alert("请求出错！");
+                        }
+                    });
+            });
         })
     };
 

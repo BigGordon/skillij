@@ -1,6 +1,6 @@
 package com.zyc.skillijserver;
 
-import com.zyc.skillijserver.repository.AccountRepository;
+import com.zyc.skillijserver.repository.mysql.AccountRepository;
 import org.junit.Before;
 import org.junit.Test;
 

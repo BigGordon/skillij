@@ -1,6 +1,7 @@
 package com.zyc.skillijserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zyc.skillijcommon.constant.Constant;
 import com.zyc.skillijserver.dto.SkillTreeDto;
 import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
@@ -8,8 +9,11 @@ import com.zyc.skillijcommon.utils.JsonResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -26,22 +30,25 @@ public class AccountController {
     private AccountService accountService;
 
     @ApiOperation(value = "账号登录")
-    @PostMapping(value = "/account/login")
+    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/login")
     public String userLogin(@RequestParam("user") String user,
                             @RequestParam("passwd") String passwd) {
 
-        String loginResult = accountService.getLoginResult(user, passwd);//使用shiro就不用自己判断了
+        String loginResult = accountService.getLoginResult(user, passwd);
         JSONObject jsonData = new JSONObject();
         jsonData.put("loginResult", loginResult);
         if (loginResult.equals("登录成功")) {
             jsonData.put("token", JWTUtil.sign(user, passwd));//放入JWT Token
+            //存入用户名用于websocket点对点聊天
+            HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+            request.getSession().setAttribute("user", user);
         }
 
         return JsonResult.jsonWithRecord(jsonData);
     }
 
     @ApiOperation(value = "侧边账号显示")
-    @GetMapping(value = "/account/get-side")
+    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/get-side")
     public String getSideAccounts() {
         List<String> sideAccounts = accountService.getSideAccounts();
         JSONObject jsonData = new JSONObject();
@@ -51,7 +58,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "获取用户技能")
-    @GetMapping(value = "/account/skills")
+    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/skills")
     public String getSkills(@RequestParam("user") String user) {
         if (StringUtils.isEmpty(user)) {
             return JsonResult.jsonWithErrMsg("未填写用户名");
@@ -64,7 +71,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "token有效性检查")
-    @GetMapping(value = "/account/token")
+    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/token")
     public String tokenCheck(@RequestParam("token") String token) {
 
         Boolean isTokenValid = accountService.getTokenValidity(token);
@@ -79,7 +86,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "未授权")
-    @GetMapping(value = "/account/unauth")
+    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/unauth")
     public String unauth() {
 
         JSONObject jsonData = new JSONObject();
@@ -89,7 +96,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "修改密码")
-    @PostMapping(value = "/account/change-passwd")
+    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/change-passwd")
     public String changePasswd(@RequestParam("username") String username,
                                @RequestParam("oldPasswd") String oldPasswd,
                                @RequestParam("newPasswd") String newPasswd) {
@@ -101,8 +108,21 @@ public class AccountController {
         return JsonResult.jsonWithRecord(jsonData);
     }
 
+    @ApiOperation(value = "修改邮箱")
+    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/change-email")
+    public String changeEmail(@RequestParam("username") String username,
+                               @RequestParam("password") String password,
+                               @RequestParam("email") String email) {
+
+        String result = accountService.changeEmail(username, password, email);
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("changeResult", result);
+
+        return JsonResult.jsonWithRecord(jsonData);
+    }
+
     @ApiOperation(value = "账号注册")
-    @PostMapping(value = "/account/register")
+    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/register")
     public String userRegister(@RequestParam("mail")     String mail,
                                @RequestParam("userName") String userName,
                                @RequestParam("passwd")   String passwd) {

@@ -1,14 +1,26 @@
 package com.zyc.skillijserver;
 
-import com.zyc.skillijcommon.domain.*;
-import com.zyc.skillijserver.repository.*;
+import com.zyc.skillijcommon.domain.mongodb.UserChat;
+import com.zyc.skillijcommon.domain.mysql.SkillijPermission;
+import com.zyc.skillijcommon.domain.mysql.SkillijRole;
+import com.zyc.skillijcommon.domain.mysql.SkillijUser;
+import com.zyc.skillijcommon.domain.mysql.UserSkill;
+import com.zyc.skillijcommon.dto.UserMessage;
+import com.zyc.skillijserver.repository.mongodb.ChatRepository;
+import com.zyc.skillijserver.repository.mysql.AccountRepository;
+import com.zyc.skillijserver.repository.mysql.PermissionRepository;
+import com.zyc.skillijserver.repository.mysql.RoleRepository;
+import com.zyc.skillijserver.repository.mysql.SkillRepository;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,12 +44,16 @@ public abstract class BaseServiceTest {
     private PermissionRepository permissionRepository;
 
     @Resource
+    private ChatRepository chatRepository;
+
+    @Resource
     private TreeRepository treeRepository;
 
     //用户
     protected SkillijUser gordon;
     protected SkillijUser traveller_ing;
     protected SkillijUser java;
+    protected SkillijUser assistant;
 
     //用户拥有的技能树
     protected UserTree javaOfgordon;
@@ -235,13 +251,19 @@ public abstract class BaseServiceTest {
     protected UserSkill jDisasterRecovery;
     protected UserSkill jRemote;
 
+    //聊天
+    protected UserChat gordon2travellering;
+    protected UserChat travellering2gordon;
+
     private Long currentTreeId;//当前技能点所属技能树id
+
 
     public void initTestData() throws Exception {
         accountRepository.deleteAll();
         skillRepository.deleteAll();
         roleRepository.deleteAll();
         permissionRepository.deleteAll();
+        chatRepository.deleteAll();
         treeRepository.deleteAll();
 
         //权限
@@ -264,12 +286,14 @@ public abstract class BaseServiceTest {
 
         //用户
         gordon = createUser("gordon", "gordon","438@qq.com");
+        gordon.setPortraitUrl("./message/images/gordon.jpg");
         List<SkillijRole> gordonRoles = new ArrayList<>();
         gordonRoles.add(admin);
         gordonRoles.add(user);
         gordon.setRoles(gordonRoles);
 
         traveller_ing = createUser("traveller_ing", "traveller_ing","666@qq.com");
+        traveller_ing.setPortraitUrl("./message/images/travellering.jpg");
         List<SkillijRole> travellerRoles = new ArrayList<>();
         travellerRoles.add(user);
         traveller_ing.setRoles(travellerRoles);
@@ -279,9 +303,12 @@ public abstract class BaseServiceTest {
         javaRoles.add(admin);
         java.setRoles(javaRoles);
 
+        assistant = createUser("私信助手", "assistant", "assistant@skillij.com");
+
         accountRepository.saveAndFlush(gordon);
         accountRepository.saveAndFlush(traveller_ing);
         accountRepository.saveAndFlush(java);
+        accountRepository.saveAndFlush(assistant);
 
         //用户的技能树
         javaOfgordon = createTree(gordon.getId(), "Java");
@@ -743,6 +770,40 @@ public abstract class BaseServiceTest {
         skillRepository.saveAndFlush(jVirtualization);
         skillRepository.saveAndFlush(jComputingPlatform);
         skillRepository.saveAndFlush(jDisasterRecovery);
+
+        //初始化对话数据
+        initChatData();
+    }
+
+    /**
+     * 初始化对话数据
+     */
+    private void initChatData() {
+        //生成时间戳，都为现在
+        Date date = new Date();
+        String nowTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        Timestamp now =Timestamp.valueOf(nowTime);
+
+        //生成消息
+        UserMessage gt1 = createMessage(now, "我是gordon", true);
+        UserMessage gt2 = createMessage(now, "我是travellering", false);
+        UserMessage tg1 = createMessage(now, "我是gordon", false);
+        UserMessage tg2 = createMessage(now, "我是travellering", true);
+        List<UserMessage> gtMessages = new ArrayList<>();
+        gtMessages.add(gt1);
+        gtMessages.add(gt2);
+        List<UserMessage> tgMessages = new ArrayList<>();
+        tgMessages.add(tg1);
+        tgMessages.add(tg2);
+
+        //创建gordon的对话
+        gordon2travellering = createChat(gordon.getId(), gordon.getUsername(), "./message/images/gordon.jpg",
+                traveller_ing.getId(), traveller_ing.getUsername(), "./message/images/travellering.jpg", gtMessages);
+        travellering2gordon = createChat(traveller_ing.getId(), traveller_ing.getUsername(), "./message/images/travellering.jpg",
+                gordon.getId(), gordon.getUsername(), "./message/images/gordon.jpg", tgMessages);
+
+        chatRepository.save(gordon2travellering);
+        chatRepository.save(travellering2gordon);
     }
 
     /**
@@ -826,6 +887,48 @@ public abstract class BaseServiceTest {
         permission.setPermission(permissionName);
 
         return permission;
+    }
+
+    /**
+     * 创建聊天
+     * @param senderId
+     * @param senderName
+     * @param senderImgUrl
+     * @param receiverId
+     * @param receiverName
+     * @param receiverImgUrl
+     * @param userMessages
+     * @return
+     */
+    protected UserChat createChat(Long senderId, String senderName, String senderImgUrl,
+                                  Long receiverId, String receiverName, String receiverImgUrl,
+                                  List<UserMessage> userMessages) {
+        UserChat result = new UserChat();
+        result.setSenderId(senderId);
+        result.setSenderName(senderName);
+        result.setSenderImgUrl(senderImgUrl);
+        result.setReceiverId(receiverId);
+        result.setReceiverName(receiverName);
+        result.setReceiverImgUrl(receiverImgUrl);
+        result.setMessages(userMessages);
+
+        return result;
+    }
+
+    /**
+     * 创建消息
+     * @param date
+     * @param content
+     * @param self
+     * @return
+     */
+    protected UserMessage createMessage(Timestamp date, String content, Boolean self) {
+        UserMessage result = new UserMessage();
+        result.setDate(date);
+        result.setContent(content);
+        result.setSelf(self);
+
+        return result;
     }
 
 

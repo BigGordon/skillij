@@ -1,6 +1,6 @@
 package com.zyc.skillijserver.service;
 
-import com.zyc.skillijcommon.domain.SkillijUser;
+import com.zyc.skillijcommon.domain.mysql.SkillijUser;
 import com.zyc.skillijserver.dto.SkillTreeDto;
 
 import java.util.List;
@@ -55,6 +55,16 @@ public interface AccountService {
      * @return
      */
     String changePassword(String username, String oldPasswd, String newPasswd);
+
+    /**
+     * 修改邮箱，返回修改结果
+     * @param username
+     * @param password
+     * @param email
+     * @return
+     */
+    String changeEmail(String username, String password, String email);
+
     /**
      * 用户注册信息录入
      * @param mail
