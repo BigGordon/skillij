@@ -6,7 +6,7 @@ import com.zyc.skillijserver.dto.EditNodesDto;
 import com.zyc.skillijserver.dto.EditTreeTitleDto;
 import com.zyc.skillijserver.repository.mysql.AccountRepository;
 import com.zyc.skillijserver.repository.mysql.SkillRepository;
-import com.zyc.skillijserver.repository.TreeRepository;
+import com.zyc.skillijserver.repository.mysql.TreeRepository;
 import com.zyc.skillijserver.service.EditService;
 import org.springframework.stereotype.Service;
 

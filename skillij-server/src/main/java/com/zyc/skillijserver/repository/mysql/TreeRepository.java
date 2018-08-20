@@ -1,4 +1,4 @@
-package com.zyc.skillijserver.repository;
+package com.zyc.skillijserver.repository.mysql;
 
 import com.zyc.skillijcommon.domain.mysql.UserTree;
 import org.springframework.data.jpa.repository.JpaRepository;

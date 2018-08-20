@@ -5,7 +5,7 @@ import com.zyc.skillijcommon.domain.mysql.UserSkill;
 import com.zyc.skillijserver.dto.SkillTreeDto;
 import com.zyc.skillijserver.repository.mysql.AccountRepository;
 import com.zyc.skillijserver.repository.mysql.SkillRepository;
-import com.zyc.skillijserver.repository.TreeRepository;
+import com.zyc.skillijserver.repository.mysql.TreeRepository;
 import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
 import org.springframework.stereotype.Service;

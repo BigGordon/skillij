@@ -3,7 +3,7 @@ package com.zyc.skillijserver;
 import com.zyc.skillijcommon.domain.mongodb.UserChat;
 import com.zyc.skillijcommon.domain.mysql.*;
 import com.zyc.skillijcommon.dto.UserMessage;
-import com.zyc.skillijserver.repository.TreeRepository;
+import com.zyc.skillijserver.repository.mysql.TreeRepository;
 import com.zyc.skillijserver.repository.mongodb.ChatRepository;
 import com.zyc.skillijserver.repository.mysql.AccountRepository;
 import com.zyc.skillijserver.repository.mysql.PermissionRepository;
@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +31,7 @@ public abstract class BaseServiceTest {
 
     @Resource
     private AccountRepository accountRepository;
+
     @Resource
     private SkillRepository skillRepository;
 
