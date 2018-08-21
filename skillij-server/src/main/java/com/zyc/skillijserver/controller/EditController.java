@@ -23,14 +23,14 @@ import java.util.List;
  * 处理技能树编辑请求
  */
 @RestController
-@RequestMapping
+@RequestMapping(value = "/edit")
 public class EditController {
 
     @Resource
     private EditService editService;
 
     @ApiOperation(value = "修改技能树")
-    @PostMapping(value = "/edit/editTree")
+    @PostMapping(value = "/editTree")
     public String getEditTree(@RequestParam("treeId") Long treeId,
                               @RequestParam("userName") String userName,
                               @RequestParam("newTreeName") String newTreeName) {
@@ -43,7 +43,7 @@ public class EditController {
 
 
     @ApiOperation(value = "删除技能树")
-    @PostMapping(value = "/edit/delTree")
+    @PostMapping(value = "/delTree")
     public String getDelTree(@RequestParam("treeId") Long treeId) {
         editService.deleteTreeByTreeId(treeId);
         return JsonResult.jsonWithSuccess();
@@ -51,7 +51,7 @@ public class EditController {
 
 
     @ApiOperation(value = "添加新技能树")
-    @PostMapping(value = "/edit/newTree")
+    @PostMapping(value = "/newTree")
     public String getNewTree(@RequestParam("newTreeName") String newTreeName,
                              @RequestParam("user") String user) {
         String newTreeResult = editService.newTree(newTreeName, user);
@@ -63,7 +63,7 @@ public class EditController {
 
 
     @ApiOperation(value = "显示技能树标题栏树名列表")
-    @GetMapping(value = "/edit/titles")
+    @GetMapping(value = "/titles")
     public String getTreeTitle(@RequestParam("user") String user) {
         List<EditTreeTitleDto> treeTitles = editService.getTitles(user);
         JSONObject jsonTree = new JSONObject();
@@ -75,7 +75,7 @@ public class EditController {
 
 
     @ApiOperation(value = "显示用户技能树节点")
-    @GetMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/nodes")
+    @GetMapping(value = "/nodes")
     public String getNodes(@RequestParam("user") String user,
                            @RequestParam("treeId") Long treeId) {
         List<EditNodesDto> skillNodes = editService.getNodes(user, treeId);
@@ -86,7 +86,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "修改用户技能树节点")
-    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/revise")
+    @PostMapping(value = "/revise")
     public String reviseNodes(@RequestParam("nodes") String nodes,
                               @RequestParam("user") String username,
                               @RequestParam("treeId") Long treeId) {
@@ -112,7 +112,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "删除用户技能树节点")
-    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/delete")
+    @PostMapping(value = "/delete")
     public String deleteNodes(@RequestParam("ids") String skillIds) {
         List<Long> idList = JSON.parseArray(skillIds, Long.class);
         editService.deleteSkillByIds(idList);
@@ -120,7 +120,7 @@ public class EditController {
     }
 
     @ApiOperation(value = "新建用户技能树节点")
-    @PostMapping(value = Constant.EDIT_CONTROLLER_PREFIX + "/new")
+    @PostMapping(value = "/new")
     public String newNode(@RequestParam("nodes") String nodes,
                           @RequestParam("user") String username,
                           @RequestParam("treeId") Long treeId) {

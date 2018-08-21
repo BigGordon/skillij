@@ -23,14 +23,14 @@ import java.util.List;
  * 处理账号相关请求
  */
 @RestController
-@RequestMapping
+@RequestMapping(value = "/account")
 public class AccountController {
 
     @Resource
     private AccountService accountService;
 
     @ApiOperation(value = "账号登录")
-    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/login")
+    @PostMapping(value = "/login")
     public String userLogin(@RequestParam("user") String user,
                             @RequestParam("passwd") String passwd) {
 
@@ -48,7 +48,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "侧边账号显示")
-    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/get-side")
+    @GetMapping(value = "/get-side")
     public String getSideAccounts() {
         List<String> sideAccounts = accountService.getSideAccounts();
         JSONObject jsonData = new JSONObject();
@@ -58,7 +58,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "获取用户技能")
-    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/skills")
+    @GetMapping(value = "/skills")
     public String getSkills(@RequestParam("user") String user) {
         if (StringUtils.isEmpty(user)) {
             return JsonResult.jsonWithErrMsg("未填写用户名");
@@ -71,7 +71,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "token有效性检查")
-    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/token")
+    @GetMapping(value = "/token")
     public String tokenCheck(@RequestParam("token") String token) {
 
         Boolean isTokenValid = accountService.getTokenValidity(token);
@@ -86,7 +86,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "未授权")
-    @GetMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/unauth")
+    @GetMapping(value = "/unauth")
     public String unauth() {
 
         JSONObject jsonData = new JSONObject();
@@ -96,7 +96,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "修改密码")
-    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/change-passwd")
+    @PostMapping(value = "/change-passwd")
     public String changePasswd(@RequestParam("username") String username,
                                @RequestParam("oldPasswd") String oldPasswd,
                                @RequestParam("newPasswd") String newPasswd) {
@@ -109,7 +109,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "修改邮箱")
-    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/change-email")
+    @PostMapping(value = "/change-email")
     public String changeEmail(@RequestParam("username") String username,
                                @RequestParam("password") String password,
                                @RequestParam("email") String email) {
@@ -122,7 +122,7 @@ public class AccountController {
     }
 
     @ApiOperation(value = "账号注册")
-    @PostMapping(value = Constant.ACCOUNT_CONTROLLER_PREFIX + "/register")
+    @PostMapping(value = "/register")
     public String userRegister(@RequestParam("mail")     String mail,
                                @RequestParam("userName") String userName,
                                @RequestParam("passwd")   String passwd) {

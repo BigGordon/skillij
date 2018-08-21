@@ -22,7 +22,7 @@ import java.security.Principal;
  * Email: biggordon@163.com
  */
 @RestController
-@RequestMapping
+@RequestMapping(value = "/chat")
 public class ChatController {
 
     @Resource
@@ -37,7 +37,7 @@ public class ChatController {
      * @return
      */
     @ApiOperation(value = "获取聊天记录")
-    @GetMapping(value = Constant.CHAT_CONTROLLER_PREFIX + "/get-chats")
+    @GetMapping(value = "/get-chats")
     public String getSideAccounts(@RequestParam("username") String username) {
         UserChatsDto userChatsDto = chatService.getChats(username);
         JSONObject jsonData = new JSONObject();
@@ -53,7 +53,7 @@ public class ChatController {
      * @return
      */
     @ApiOperation(value = "新建聊天")
-    @PostMapping(value = Constant.CHAT_CONTROLLER_PREFIX + "/new-chat")
+    @PostMapping(value = "/new-chat")
     public String addChat(@RequestParam("fromUser") String fromUser,
                           @RequestParam("toUser") String toUser) {
         String addChatResult = chatService.addChat(fromUser, toUser);
