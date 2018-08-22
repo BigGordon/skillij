@@ -1,11 +1,15 @@
 spring:
   profiles:
     active: development
----
+
 server:
   port: 8080
   tomcat.uri-encoding: UTF-8
 
+logging:
+  level: debug
+
+---
 spring:
   profiles: development
   datasource:

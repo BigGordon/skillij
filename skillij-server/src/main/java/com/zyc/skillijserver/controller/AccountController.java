@@ -7,6 +7,8 @@ import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
 import com.zyc.skillijcommon.utils.JsonResult;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,6 +30,8 @@ public class AccountController {
 
     @Resource
     private AccountService accountService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ApiOperation(value = "账号登录")
     @PostMapping(value = "/login")
