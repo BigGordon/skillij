@@ -8,6 +8,7 @@ import com.zyc.skillijserver.repository.mysql.SkillRepository;
 import com.zyc.skillijserver.repository.mysql.TreeRepository;
 import com.zyc.skillijserver.service.AccountService;
 import com.zyc.skillijcommon.utils.JWTUtil;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -57,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
+    @Cacheable(value = "sideAccounts", key = "#root.methodName")
     public List<String> getSideAccounts() {
         List<Long> ids = new ArrayList<>();
 

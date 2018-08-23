@@ -25,6 +25,17 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/skillij?maxPoolSize=256
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+    timeout: 0
+
 
 
 ---
