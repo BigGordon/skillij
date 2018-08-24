@@ -9,7 +9,8 @@ import java.io.Serializable;
  * Email: biggordon@163.com
  */
 @Entity
-@Table(name = "user_skill")
+@Table(name = "user_skill",
+        indexes = {@Index(name = "user_id_index",  columnList="user_id", unique = false)})
 public class UserSkill implements Serializable {
 
     @Id

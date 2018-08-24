@@ -25,6 +25,8 @@ public class SkillTreeDto implements Serializable {
      */
     private List<SkillTreeDto> children;
 
+    public SkillTreeDto() {}
+
     public SkillTreeDto(String nodeName) {
         name = nodeName;
     }

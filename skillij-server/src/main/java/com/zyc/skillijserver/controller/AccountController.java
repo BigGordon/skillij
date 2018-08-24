@@ -67,7 +67,10 @@ public class AccountController {
         if (StringUtils.isEmpty(user)) {
             return JsonResult.jsonWithErrMsg("未填写用户名");
         }
+//        long startTime = System.currentTimeMillis();    //获取开始时间
         SkillTreeDto skillTree = accountService.getUserSkillTree(user);
+//        long endTime = System.currentTimeMillis();    //获取结束时间
+//        logger.info("获取用户技能时间：" + (endTime - startTime) + "毫秒");
         JSONObject jsonData = new JSONObject();
         jsonData.put("skills", skillTree);
 
