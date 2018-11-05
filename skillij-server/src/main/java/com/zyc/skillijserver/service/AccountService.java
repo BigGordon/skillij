@@ -28,10 +28,12 @@ public interface AccountService {
 
     /**
      * 获取用户的技能树
+     * treeId为-1则取第一颗树
      * @param user
+     * @param treeId
      * @return
      */
-    SkillTreeDto getUserSkillTree(String user);
+    SkillTreeDto getUserSkillTree(String user, Long treeId);
 
     /**
      * 根据用户名找到用户对象

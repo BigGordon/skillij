@@ -84,6 +84,8 @@ admin = function() {
      * @private
      */
     me._initLeftBtns = function () {
+        //“我的技能树”按钮
+        me._initMyTreesBtn();
         //“编辑”按钮
         me._initEditBtn();
         //“消息”按钮
@@ -96,6 +98,18 @@ admin = function() {
         me._initChangePasswdBtn();
         //“退出登录”按钮
         me._initLogoutBtn();
+    };
+
+    /**
+     * 我的技能树按钮初始化
+     * @private
+     */
+    me._initMyTreesBtn = function () {
+        $("#myTreesBtn").on("click", function () {
+            var pageWrapper = $("#page-wrapper");
+            pageWrapper.empty();
+            pageWrapper.attr("src", "my_trees.html");
+        })
     };
 
     /**

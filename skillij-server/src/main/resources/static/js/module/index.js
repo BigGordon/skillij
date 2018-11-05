@@ -169,7 +169,8 @@ index = function () {
             url: "/account/skills",
             async: true,
             data: {
-                user: "java"
+                user: "java",
+                treeId: -1
             },
             success: function (res) {
                 var resJson = JSON.parse(res);

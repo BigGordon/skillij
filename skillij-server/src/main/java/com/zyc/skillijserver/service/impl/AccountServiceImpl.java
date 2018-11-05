@@ -82,13 +82,22 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    @Cacheable(value = "userFistSkillTree", key = "#p0")
-    public SkillTreeDto getUserSkillTree(String user) {
+    @Cacheable(value = "userFistSkillTree", key = "#p0+#p1")
+    public SkillTreeDto getUserSkillTree(String user, Long treeId) {
         SkillTreeDto mainSkillTree = new SkillTreeDto(user);
         Long id = accountRepository.getIdByUsername(user);
-        List<Long> treeIds = treeRepository.getTreeIdByUserId(id);
-        //获取列表里第一个树
-        List<UserSkill> userSkills = skillRepository.findUserSkillsByUserIdAndTreeId(id, treeIds.get(0));
+
+        List<Long> treeIds;
+        List<UserSkill> userSkills;
+
+        //若id为-1，则获取列表里第一个树
+        if(treeId == -1L) {
+            treeIds = treeRepository.getTreeIdByUserId(id);
+            userSkills = skillRepository.findUserSkillsByUserIdAndTreeId(id, treeIds.get(0));
+        } else {
+            userSkills = skillRepository.findUserSkillsByUserIdAndTreeId(id, treeId);
+        }
+
         //创建并装载各级技能树
         Map<Long, Map<Long, SkillTreeDto>> levelSkills = new HashMap<>();
         for (UserSkill userSkill: userSkills) {

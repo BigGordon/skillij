@@ -63,14 +63,12 @@ public class AccountController {
 
     @ApiOperation(value = "获取用户技能")
     @GetMapping(value = "/skills")
-    public String getSkills(@RequestParam("user") String user) {
+    public String getSkills(@RequestParam("user") String user,
+                            @RequestParam("treeId") String treeId) {
         if (StringUtils.isEmpty(user)) {
             return JsonResult.jsonWithErrMsg("未填写用户名");
         }
-//        long startTime = System.currentTimeMillis();    //获取开始时间
-        SkillTreeDto skillTree = accountService.getUserSkillTree(user);
-//        long endTime = System.currentTimeMillis();    //获取结束时间
-//        logger.info("获取用户技能时间：" + (endTime - startTime) + "毫秒");
+        SkillTreeDto skillTree = accountService.getUserSkillTree(user, Long.valueOf(treeId));
         JSONObject jsonData = new JSONObject();
         jsonData.put("skills", skillTree);
 

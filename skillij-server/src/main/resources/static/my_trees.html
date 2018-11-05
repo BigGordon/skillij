@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--我的技能树界面-->
+    <meta charset="UTF-8">
+    <title>我的技能树</title>
+
+    <!-- 引入 Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义css -->
+    <link href="css/my_trees.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">我的技能树</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 id="skillTreeName">
+                        <!--   <a id="skillTree1" class="treeName" href="#">技能树 1</a>   -->
+                    </h3>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <!-- eCharts树 -->
+                    <div id="tree" style="width:100%;height:600px"></div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.row -->
+
+<!-- 全局js -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/echarts.js"></script>
+
+<!-- 自定义js -->
+<script src="js/module/my_trees.js"></script>
+
+<script type="text/javascript">
+    //构建并初始化页面管理对象
+    var fileManage = new my_trees();
+    $(document).ready(function () {
+        fileManage.init();
+    });
+</script>
+<!-- 第三方插件 -->
+</body>
+</html>
